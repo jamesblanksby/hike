@@ -1,0 +1,63 @@
+/* ////////////////////////////////////////////////////////////////////////////// */
+/* ////////////////////////////////////////////////////////////////// CONTROL /// */
+/* ////////////////////////////////////////////////////////////////////////////// */
+
+/* -------------------------------------------------------------------- ASIDE --- */
+aside.control {
+    position: absolute;
+    top: 0;
+    right: 0;
+    z-index: 2;
+    display: flex;
+    padding: 12px;
+    margin: 24px;
+    align-items: center;
+    background-color: white;
+    box-shadow: 0 0 24px rgba($grey9, 0.125);
+    border-radius: 4px;
+}
+
+/* ------------------------------------------------------------------- ACTION --- */
+aside.control .action {
+    display: flex;
+}
+aside.control .action a {
+    display: flex;
+    width: 32px;
+    height: 32px;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid $snow6;
+    border-radius: 4px;
+    transition: border-color 160ms, box-shadow 160ms;
+}
+aside.control .action a:not(:last-child) {
+    margin-right: 6px;
+}
+aside.control .action a:hover {
+    box-shadow: 0 0 4px rgba($grey9, 0.125);
+    border-color: $grey0;
+}
+aside.control .action a::before {
+    display: block;
+    width: 20px;
+    height: 20px;
+    content: '';
+    background-color: $grey9;
+    mask-position: center;
+    mask-size: contain;
+    mask-repeat: no-repeat;
+    transition: background-color 160ms;
+}
+aside.control .action a.center::before {
+    mask-image: url('../gfx/center.svg');
+}
+aside.control .action a.style::before {
+    mask-image: url('../gfx/style.svg');
+}
+aside.control .action a.profile::before {
+    mask-image: url('../gfx/profile.svg');
+}
+aside.control .action a:hover::before {
+    background-color: $grey9;
+}
