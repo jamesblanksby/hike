@@ -443,13 +443,13 @@ function track_coordinate(track) {
 /* -------------------------------------------------------------------- COLOR --- */
 function track_color(track) {
 	var color;
-
+	
 	// determine track color depending on distance
-	if (track.distance.total <= 5000) color = '#0683df';
-	else if (track.distance.total <= 10000) color = '#46e546';
-	else if (track.distance.total <= 15000) color = '#ffa600';
-	else if (track.distance.total <= 20000) color = '#ff273a';
-	else color = '#16000f';
+	if (track.distance.total <= 5000) color = 'rgba(0, 168, 255, 1)';
+	else if (track.distance.total <= 10000) color = 'rgba(76, 209, 55, 1)';
+	else if (track.distance.total <= 15000) color = 'rgba(251, 197, 49, 1)';
+	else if (track.distance.total <= 20000) color = 'rgba(232, 65, 24, 1)';
+	else color = 'rgba(47, 54, 64, 1)';
 
 	return color;
 }
