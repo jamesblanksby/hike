@@ -8,7 +8,7 @@
 include __DIR__ . '/config.php';
 
 /* -------------------------------------------------------------- ENVIRONMENT --- */
-$_ENVIRONMENT = environment();
+$_ENVIRONMENT = 'local';
 
 /* ---------------------------------------------------------------------- ENV --- */
 $_ENV = $_CONFIG[$_ENVIRONMENT];

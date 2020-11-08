@@ -4,20 +4,6 @@
 /* /////////////////////////////////////////////////////////////////// SYSTEM /// */
 /* ////////////////////////////////////////////////////////////////////////////// */
 
-/* -------------------------------------------------------------- ENVIRONMENT --- */
-function environment() {
-	// determine operating environment
-	$docker = @strpos(@shell_exec('cat /proc/self/cgroup'), 'docker');
-	$server = @strpos($_SERVER['SERVER_NAME'], 'engine.work');
-
-	// set environment key
-	if ($docker !== false) $key = 'local';
-	else if ($server !== false) $key = 'develop';
-	else $key = 'live';
-
-	return $key;
-}
-
 /* ---------------------------------------------------------------- ENCRYPTED --- */
 function encrypted() {
 	// determine if https is set or server is running on port 443
