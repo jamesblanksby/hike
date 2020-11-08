@@ -1,0 +1,13 @@
+# file
+config.php
+
+# directory
+tmp/*/*
+lib/*/*
+**/src/css/*
+
+# vendor
+node_modules/
+
+# void
+!.gitkeep

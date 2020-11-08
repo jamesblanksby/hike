@@ -1,0 +1,217 @@
+/* ////////////////////////////////////////////////////////////////////////////// */
+/* //////////////////////////////////////////////////////////////////// RESET /// */
+/* ////////////////////////////////////////////////////////////////////////////// */
+
+/* ----------------------------------------------------------------- WILDCARD --- */
+*,
+*:after,
+*:before {
+    box-sizing: border-box;
+    outline: none;
+    -webkit-tap-highlight-color: rgba(black, 0);
+}
+
+/* ------------------------------------------------------------------ ELEMENT --- */
+html,
+body,
+div,
+span,
+applet,
+object,
+iframe,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+blockquote,
+pre,
+a,
+abbr,
+acronym,
+address,
+big,
+cite,
+code,
+del,
+dfn,
+em,
+img,
+ins,
+kbd,
+q,
+s,
+samp,
+small,
+strike,
+strong,
+sub,
+sup,
+tt,
+var,
+b,
+u,
+i,
+center,
+dl,
+dt,
+dd,
+ol,
+ul,
+li,
+fieldset,
+form,
+label,
+legend,
+table,
+caption,
+tbody,
+tfoot,
+thead,
+tr,
+th,
+td,
+article,
+aside,
+canvas,
+details,
+embed,
+figure,
+figcaption,
+footer,
+header,
+hgroup,
+menu,
+nav,
+output,
+ruby,
+section,
+summary,
+time,
+mark,
+audio,
+video,
+dialog {
+    padding: 0;
+    margin: 0;
+    font: inherit;
+    font-size: 100%;
+    vertical-align: baseline;
+    border: 0;
+}
+article,
+aside,
+details,
+figcaption,
+figure,
+footer,
+header,
+hgroup,
+menu,
+nav,
+section {
+    display: block;
+}
+
+/* ----------------------------------------------------------------- DOCUMENT --- */
+body {
+    line-height: 1;
+}
+
+/* --------------------------------------------------------------------- LIST --- */
+ol,
+ul,
+li {
+    list-style: none;
+}
+
+/* -------------------------------------------------------------------- TABLE --- */
+table {
+    text-align: left;
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+
+/* ------------------------------------------------------------------- DIALOG --- */
+dialog {
+    position: static;
+    display: block;
+    width: auto;
+    height: auto;
+    color: inherit;
+    background: none;
+}
+
+/* --------------------------------------------------------------------- FORM --- */
+input,
+textarea,
+button,
+select {
+    padding: 0;
+    margin: 0;
+    color: inherit;
+    font-family: inherit;
+    font-size: inherit;
+    line-height: 1;
+    appearance: none;
+    background: transparent;
+    border: 0;
+    border-radius: 0;
+    outline: none;
+}
+textarea {
+    vertical-align: top;
+}
+select {
+    text-indent: 0.01px;
+    text-overflow: '';
+    border: 0;
+    border-radius: 0;
+}
+select::-ms-expand {
+    display: none;
+}
+select:-moz-focusring {
+    color: transparent;
+    text-shadow: 0 0 0 black;
+}
+select option {
+    font-family: sans-serif;
+}
+
+/* -------------------------------------------------------------------- QUOTE --- */
+q,
+blockquote {
+    quotes: none;
+}
+q::before,
+q::after,
+blockquote::before,
+blockquote::after {
+    content: '';
+    content: none;
+}
+
+/* ---------------------------------------------------------------- SUP / SUB --- */
+sub,
+sup {
+    position: relative;
+    font-size: 75%;
+    line-height: 0;
+    vertical-align: baseline;
+}
+sup {
+    top: -0.5em;
+}
+sub {
+    bottom: -0.25em;
+}
+
+/* --------------------------------------------------------------- CODE / PRE --- */
+code,
+pre {
+    font-family: monospace;
+    font-size: 1em;
+}
