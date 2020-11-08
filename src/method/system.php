@@ -7,7 +7,11 @@
 /* ---------------------------------------------------------------- ENCRYPTED --- */
 function encrypted() {
 	// determine if https is set or server is running on port 443
-    return (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || $_SERVER['SERVER_PORT'] === 443;
+	return 
+		(!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || 
+		(!empty($_SERVER['HTTP_X_FORWARDED_SSL']) && $_SERVER['HTTP_X_FORWARDED_SSL'] !== 'off') || 
+		$_SERVER['SERVER_PORT'] === 443 ||
+		$_SERVER['HTTP_X_FORWARDED_PORT'] === 443;
 }
 
 /* --------------------------------------------------------------------- PATH --- */
