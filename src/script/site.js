@@ -468,6 +468,24 @@ function track_center() {
 	map_bound(bound);
 }
 
+/* -------------------------------------------------------------------- LAYER --- */
+function track_layer(id, paint) {
+	var layer;
+
+	layer = {
+		id: id,
+		type: 'line',
+		source: 'track',
+		layout: {
+			'line-cap': 'round',
+			'line-join': 'round',
+		},
+		paint: paint,
+	};
+
+	return layer;
+}
+
 /* --------------------------------------------------------------------- DRAW --- */
 function track_draw() {
 	// default
@@ -479,8 +497,15 @@ function track_draw() {
 /* ----------------------------------------------------------- DRAW : DEFAULT --- */
 function track_draw_default() {
 	(async function() {
-		var style,
+		var paint,
+			style,
 			layer;
+
+		// define layer paint
+		paint = { 
+			'line-width': 1.5,
+			'line-color': ['get', 'color',],
+		};
 
 		// store style
 		style = MAP.style[TRACK.style];
@@ -489,25 +514,14 @@ function track_draw_default() {
 		await map_style(style);
 
 		// purge heatmap track
-		map_layer_purge('track-heatmap');
+		map_layer_purge('track-heatmap-base');
+		map_layer_purge('track-heatmap-density');
 
 		// rebuild source
 		track_source();
 
 		// layer
-		layer = {
-			id: 'track-default',
-			type: 'line',
-			source: 'track',
-			layout: {
-				'line-cap': 'round',
-				'line-join': 'round',
-			},
-			paint: { 
-				'line-width': 1.5,
-				'line-color': ['get', 'color',],
-			},
-		};
+		layer = track_layer('track-default', paint);
 		// append layer to map
 		MAP.ctx.addLayer(layer, 'waterway-label');
 	})();
@@ -516,8 +530,16 @@ function track_draw_default() {
 /* ----------------------------------------------------------- DRAW : HEATMAP --- */
 function track_draw_heatmap() {
 	(async function() {
-		var style,
+		var paint,
+			style,
 			layer;
+
+		// define layer paint
+		paint = { 
+			'line-width': 1.5,
+			'line-color': 'rgba(152, 0, 67, 1)',
+			'line-opacity': 0.375,
+		};
 
 		// store style
 		style = MAP.style[TRACK.style];
@@ -533,7 +555,7 @@ function track_draw_heatmap() {
 
 		// layer
 		layer = {
-			'id': 'track-heatmap',
+			'id': 'track-heatmap-density',
 			'type': 'heatmap',
 			'source': 'track',
 			'maxzoom': 20.1,
@@ -552,7 +574,7 @@ function track_draw_heatmap() {
 					'interpolate', ['linear',],
 					['heatmap-density',],
 					0, 'rgba(0, 0, 0, 0)',
-					0.2, 'rgba(152, 0, 67, 1)',
+					0.2, 'rgba(0, 0, 0, 0)',
 					0.4, 'rgba(221, 28, 119, 1)',
 					0.6, 'rgba(223, 101, 176, 1)',
 					0.8, 'rgba(215, 181, 216, 1)',
@@ -604,6 +626,11 @@ function track_draw_heatmap() {
 		};
 		// append layer to map
 		MAP.ctx.addLayer(layer, 'waterway-label');
+
+		// layer
+		layer = track_layer('track-heatmap-base', paint);
+		// append layer to map
+		MAP.ctx.addLayer(layer, 'track-heatmap-density');
 	})();
 }
 
