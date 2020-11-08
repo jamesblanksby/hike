@@ -95,6 +95,8 @@ function map_render() {
 		MAP.ctx = new mapboxgl.Map({
 			style: MAP.style.active,
 			center: [0, 0,],
+			minZoom: 1,
+			maxZoom: 18,
 			container: $canvas[0],
 			attributionControl: false,
 			preserveDrawingBuffer: true,
@@ -386,7 +388,7 @@ function track_source() {
 	if (MAP.ctx.getSource('track')) MAP.ctx.removeSource('track');
 
 	// build track data source
-	source = { maxzoom: 15, type: 'geojson', data: { type: 'FeatureCollection', features: [], }, generateId: true, };
+	source = { type: 'geojson', data: { type: 'FeatureCollection', features: [], }, generateId: true, };
 
 	// loop through data tracks
 	for (var i = 0; i < TRACK.item.length; i++) {
@@ -452,24 +454,6 @@ function track_color(track) {
 	return color;
 }
 
-/* -------------------------------------------------------------------- LAYER --- */
-function track_layer(id, paint) {
-	var layer;
-
-	layer = {
-		id: id,
-		type: 'line',
-		source: 'track',
-		layout: {
-			'line-cap': 'round',
-			'line-join': 'round',
-		},
-		paint: paint,
-	};
-
-	return layer;
-}
-
 /* ------------------------------------------------------------------- CENTER --- */
 function track_center() {
 	var coordinate,
@@ -496,17 +480,10 @@ function track_draw() {
 function track_draw_default() {
 	(async function() {
 		var style,
-			layer,
-			paint;
+			layer;
 
 		// store style
 		style = MAP.style[TRACK.style];
-
-		// define layer paint
-		paint = { 
-			'line-width': 1.5,
-			'line-color': ['get', 'color',],
-		};
 
 		// style
 		await map_style(style);
@@ -518,7 +495,19 @@ function track_draw_default() {
 		track_source();
 
 		// layer
-		layer = track_layer('track-default', paint);
+		layer = {
+			id: 'track-default',
+			type: 'line',
+			source: 'track',
+			layout: {
+				'line-cap': 'round',
+				'line-join': 'round',
+			},
+			paint: { 
+				'line-width': 1.5,
+				'line-color': ['get', 'color',],
+			},
+		};
 		// append layer to map
 		MAP.ctx.addLayer(layer, 'waterway-label');
 	})();
@@ -528,18 +517,10 @@ function track_draw_default() {
 function track_draw_heatmap() {
 	(async function() {
 		var style,
-			layer,
-			paint;
+			layer;
 
 		// store style
 		style = MAP.style[TRACK.style];
-
-		// define layer paint
-		paint = { 
-			'line-width': 1.5,
-			'line-color': '#c51b8a',
-			'line-opacity': 0.375,
-		};
 
 		// style
 		await map_style(style);
@@ -551,7 +532,76 @@ function track_draw_heatmap() {
 		track_source();
 
 		// layer
-		layer = track_layer('track-heatmap', paint);
+		layer = {
+			'id': 'track-heatmap',
+			'type': 'heatmap',
+			'source': 'track',
+			'maxzoom': 20.1,
+			'paint': {
+				'heatmap-weight': [
+					'interpolate', ['exponential', 1.5,],
+					['zoom',],
+					0, ['interpolate', ['linear',],
+						['get', 'density',], 0, 0, 25, 1,
+					],
+					18.1, ['interpolate', ['linear',],
+						['get', 'density',], 0, 0, 15, 1,
+					],
+				],
+				'heatmap-color': [
+					'interpolate', ['linear',],
+					['heatmap-density',],
+					0, 'rgba(0, 0, 0, 0)',
+					0.2, 'rgba(152, 0, 67, 1)',
+					0.4, 'rgba(221, 28, 119, 1)',
+					0.6, 'rgba(223, 101, 176, 1)',
+					0.8, 'rgba(215, 181, 216, 1)',
+					1, 'rgba(241, 238, 246, 1)',
+				],
+				'heatmap-radius': [
+					'interpolate', ['exponential', 1.5,],
+					['zoom',],
+					0, 5,
+					18.1, 20,
+				],
+				'heatmap-intensity': [
+					'interpolate', ['linear',],
+					['zoom',],
+					0, 0.25,
+					0.99, 1,
+					1, 0.25,
+					1.99, 1,
+					2, 0.25,
+					2.99, 1,
+					3, 0.25,
+					3.99, 1,
+					4, 0.25,
+					4.99, 1,
+					5, 0.25,
+					5.99, 1,
+					6, 0.25,
+					6.99, 1,
+					7, 0.25,
+					7.99, 1,
+					8, 0.25,
+					8.99, 1,
+					9, 0.25,
+					9.99, 1,
+					10, 0.25,
+					10.99, 1,
+					11, 0.25,
+					11.99, 1,
+					12, 0.25,
+					18.99, 2,
+				],
+				'heatmap-opacity': [
+					'interpolate', ['exponential', 1.5,],
+					['zoom',],
+					16, 1,
+					18.1, 0.6,
+				],
+			},
+		};
 		// append layer to map
 		MAP.ctx.addLayer(layer, 'waterway-label');
 	})();
