@@ -5,17 +5,67 @@
 /* -------------------------------------------------------------------- ASIDE --- */
 aside.detail {
     position: absolute;
-    bottom: 0;
-    left: 50%;
     z-index: 2;
-    display: flex;
-    width: calc(100% - 48px);
-    max-width: 1232px;
-    margin-bottom: 24px;
+    overflow: hidden;
     background-color: white;
     box-shadow: 0 0 24px rgba($grey9, 0.125);
     border-radius: 4px;
-    transform: translateX(-50%);
+    @media (min-width: ($break1 + 1px)) {
+        bottom: 0;
+        left: 50%;
+        width: calc(100% - 48px);
+        height: 150px;
+        max-width: 1232px;
+        margin-bottom: 24px;
+        transform: translateX(-50%);
+    }
+    @media (max-width: $break1) and (min-width: ($break0 + 1px)) {
+        width: 240px;
+        height: calc(100% - 48px);
+        margin: 24px 0 24px 24px;
+    }
+    @media (max-width: $break0) {
+        bottom: 0;
+        left: 50%;
+        width: calc(100% - 32px);
+        height: 134px;
+        margin-bottom: 16px;
+        transform: translateX(-50%);
+    }
+}
+aside.detail::before,
+aside.detail::after {
+    position: absolute;
+    top: 0;
+    display: block;
+    width: 16px;
+    height: 100%;
+    @media (max-width: $break0) {
+        content: '';
+    }
+}
+aside.detail::before {
+    left: 0;
+    background-image: linear-gradient(90deg, rgba(white, 1), rgba(white, 0));
+}
+aside.detail::after {
+    right: 0;
+    background-image: linear-gradient(-90deg, rgba(white, 1), rgba(white, 0));
+}
+
+/* ------------------------------------------------------------------- SCROLL --- */
+aside.detail > div {
+    display: flex;
+    @media (max-width: $break1) and (min-width: ($break0 + 1px)) {
+        height: 100%;
+        flex-flow: column;
+    }
+    @media (max-width: $break0) {
+        height: calc(100% + 32px);
+        padding-bottom: 32px;
+        overflow: auto;
+        scroll-snap-type: x proximity;
+    }
 }
 
 /* ------------------------------------------------------------------ HEADING --- */
@@ -39,14 +89,37 @@ aside.detail h3 {
 /* -------------------------------------------------------------------- GROUP --- */
 aside.detail .group {
     display: flex;
-    padding: 0 24px;
-    margin: 24px 0;
-    align-content: flex-start;
-    flex: 1;
     flex-wrap: wrap;
+    @media (min-width: ($break1 + 1px)) {
+        padding: 0 24px;
+        margin: 24px 0;
+        align-content: flex-start;
+        flex: 1;
+    }
+    @media (max-width: $break1) and (min-width: ($break0 + 1px)) {
+        padding: 16px 0;
+        margin: 0 18px;
+        align-content: center;
+        flex: 1;
+    }
+    @media (max-width: $break0) {
+        width: 256px;
+        padding: 0 16px;
+        margin: 16px 0;
+        scroll-snap-align: start;
+        flex: 0 0 auto;
+    }
 }
 aside.detail .group:not(:last-child) {
-    border-right: 1px solid $grey0;
+    @media (min-width: ($break1 + 1px)) {
+        border-right: 1px solid $grey0;
+    }
+    @media (max-width: $break1) and (min-width: ($break0 + 1px)) {
+        border-bottom: 1px solid $grey0;
+    }
+    @media (max-width: $break0) {
+        border-right: 1px solid $grey0;
+    }
 }
 aside.detail .group.speed h2::after,
 aside.detail .group.pace h2::after {

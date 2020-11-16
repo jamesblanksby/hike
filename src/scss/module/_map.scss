@@ -5,9 +5,17 @@
 /* ------------------------------------------------------------------ SECTION --- */
 section.map {
     z-index: 1;
-    padding: 32px 32px 212px;
     background-color: $snow6;
     @include position-fill(absolute);
+    @media (min-width: ($break1 + 1px)) {
+        padding: 24px 24px 204px;
+    }
+    @media (max-width: $break1) and (min-width: ($break0 + 1px)) {
+        padding: 24px 24px 24px 288px;
+    }
+    @media (max-width: $break0) {
+        padding: 16px 16px 166px;
+    }
 }
 
 /* ------------------------------------------------------------------- CANVAS --- */

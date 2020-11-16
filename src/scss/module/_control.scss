@@ -10,11 +10,16 @@ aside.control {
     z-index: 2;
     display: flex;
     padding: 12px;
-    margin: 24px;
     align-items: center;
     background-color: white;
     box-shadow: 0 0 24px rgba($grey9, 0.125);
     border-radius: 4px;
+    @media (min-width: ($break1 + 1px)) {
+        margin: 24px;
+    }
+    @media (max-width: $break0) {
+        margin: 16px;
+    }
 }
 
 /* ------------------------------------------------------------------- ACTION --- */
