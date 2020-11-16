@@ -5,11 +5,11 @@
 /* ////////////////////////////////////////////////////////////////////////////// */
 
 /* ------------------------------------------------------------------- SECOND --- */
-function format_second($ss) {
-    $second = ($ss % 60);
-    $minute = floor(($ss % 3600) / 60);
-    $hour = floor(($ss % 86400) / 3600);
-    $day = floor(($ss % 2592000) / 86400);
+function format_second($s) {
+    $second = ($s % 60);
+    $minute = floor(($s % 3600) / 60);
+    $hour = floor(($s % 86400) / 3600);
+    $day = floor(($s % 2592000) / 86400);
     
     return (object) [
         'day' => $day,
