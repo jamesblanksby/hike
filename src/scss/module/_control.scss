@@ -40,8 +40,10 @@ aside.control .action a:not(:last-child) {
     margin-right: 6px;
 }
 aside.control .action a:hover {
-    box-shadow: 0 0 4px rgba($grey9, 0.125);
-    border-color: $grey0;
+    @media (pointer: fine) {
+        box-shadow: 0 0 4px rgba($grey9, 0.125);
+        border-color: $grey0;
+    }
 }
 aside.control .action a::before {
     display: block;
@@ -64,5 +66,7 @@ aside.control .action a.profile::before {
     mask-image: url('../gfx/profile.svg');
 }
 aside.control .action a:hover::before {
-    background-color: $grey9;
+    @media (pointer: fine) {
+        background-color: $grey9;
+    }
 }
