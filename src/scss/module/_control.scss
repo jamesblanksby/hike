@@ -17,6 +17,9 @@ aside.control {
     @media (min-width: ($break1 + 1px)) {
         margin: 24px;
     }
+    @media (max-width: $break1) and (min-width: ($break0 + 1px)) {
+        margin: 24px;
+    }
     @media (max-width: $break0) {
         margin: 16px;
     }
