@@ -10,7 +10,7 @@ var MAPBOX = {};
 var MAP = {};
 	MAP.ctx = undefined;
 	MAP.style = {
-		default: 'mapbox://styles/jamesblanksby/ckh99mzew0nxq19n0qygpqh27',
+		default: 'mapbox://styles/jamesblanksby/ckht3exwv29rd1anysnr4h59a',
 		heatmap: 'mapbox://styles/jamesblanksby/ckh99rzt7260819odgvjykhpi',
 	};
 	MAP.style.active = MAP.style.default;
