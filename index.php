@@ -33,8 +33,8 @@ foreach ($file_array as $file) {
         </div>
     </aside>
 
-    <!-- detail -->
-    <aside class="detail">
+    <!-- data -->
+    <aside class="data">
         <div>
             <div class="group time">
                 <h2>Time</h2>

@@ -3,7 +3,7 @@
 /* ////////////////////////////////////////////////////////////////////////////// */
 
 /* -------------------------------------------------------------------- ASIDE --- */
-aside.detail {
+aside.data {
     position: absolute;
     z-index: 2;
     overflow: hidden;
@@ -33,8 +33,8 @@ aside.detail {
         transform: translateX(-50%);
     }
 }
-aside.detail::before,
-aside.detail::after {
+aside.data::before,
+aside.data::after {
     position: absolute;
     top: 0;
     display: block;
@@ -44,17 +44,17 @@ aside.detail::after {
         content: '';
     }
 }
-aside.detail::before {
+aside.data::before {
     left: 0;
     background-image: linear-gradient(90deg, rgba(white, 1), rgba(white, 0));
 }
-aside.detail::after {
+aside.data::after {
     right: 0;
     background-image: linear-gradient(-90deg, rgba(white, 1), rgba(white, 0));
 }
 
 /* ------------------------------------------------------------------- SCROLL --- */
-aside.detail > div {
+aside.data > div {
     display: flex;
     @media (max-width: $break1) and (min-width: ($break0 + 1px)) {
         height: 100%;
@@ -69,25 +69,25 @@ aside.detail > div {
 }
 
 /* ------------------------------------------------------------------ HEADING --- */
-aside.detail h2 {
+aside.data h2 {
     margin-bottom: 12px;
     flex-basis: 100%;
     color: $grey9;
 }
-aside.detail h2::after {
+aside.data h2::after {
     display: inline-block;
     margin-left: 8px;
     color: $grey3;
     font-size: 10px;
     font-weight: 400;
 }
-aside.detail h3 {
+aside.data h3 {
     margin-bottom: 6px;
     color: $grey6;
 }
 
 /* -------------------------------------------------------------------- GROUP --- */
-aside.detail .group {
+aside.data .group {
     display: flex;
     flex-wrap: wrap;
     @media (min-width: ($break1 + 1px)) {
@@ -110,7 +110,7 @@ aside.detail .group {
         flex: 0 0 auto;
     }
 }
-aside.detail .group:not(:last-child) {
+aside.data .group:not(:last-child) {
     @media (min-width: ($break1 + 1px)) {
         border-right: 1px solid $grey0;
     }
@@ -121,67 +121,67 @@ aside.detail .group:not(:last-child) {
         border-right: 1px solid $grey0;
     }
 }
-aside.detail .group.speed h2::after,
-aside.detail .group.pace h2::after {
+aside.data .group.speed h2::after,
+aside.data .group.pace h2::after {
     content: '(Average)';
 }
 
 /* --------------------------------------------------------------------- ITEM --- */
-aside.detail .group .item {
+aside.data .group .item {
     width: 50%;
 }
-aside.detail .group .item:not(:nth-of-type(-n+2)) {
+aside.data .group .item:not(:nth-of-type(-n+2)) {
     margin-top: 10px;
 }
 
 /* -------------------------------------------------------------------- VALUE --- */
-aside.detail .value {
+aside.data .value {
     color: $grey9;
     font-size: 16px;
     font-weight: 600;
 }
-aside.detail .item:nth-of-type(4) .value {
+aside.data .item:nth-of-type(4) .value {
     font-weight: 800;
 }
-aside.detail .group.time .value {
+aside.data .group.time .value {
     display: flex;
 }
-aside.detail .value::after {
+aside.data .value::after {
     margin-left: 0.25em;
     color: $grey6;
     font-size: 50%;
     font-weight: 600;
     letter-spacing: 0.1em;
 }
-aside.detail .group.distance .value::after {
+aside.data .group.distance .value::after {
     content: 'KM';
 }
-aside.detail .group.speed .value::after {
+aside.data .group.speed .value::after {
     content: 'KM/H';
 }
-aside.detail .group.pace .value::after {
+aside.data .group.pace .value::after {
     content: '/KM';
 }
-aside.detail .group.elevation .value::after {
+aside.data .group.elevation .value::after {
     content: 'M';
 }
 
 /* --------------------------------------------------------------------- TIME --- */
-aside.detail .group.time .value div:not(:last-child) {
+aside.data .group.time .value div:not(:last-child) {
     margin-right: 4px;
 }
-aside.detail .group.time .value div::after {
+aside.data .group.time .value div::after {
     margin-left: 0.25em;
     color: $grey6;
     font-size: 50%;
     font-weight: 600;
 }
-aside.detail .group.time .day::after {
+aside.data .group.time .day::after {
     content: 'D';
 }
-aside.detail .group.time .hour::after {
+aside.data .group.time .hour::after {
     content: 'H';
 }
-aside.detail .group.time .minute::after {
+aside.data .group.time .minute::after {
     content: 'M';
 }
