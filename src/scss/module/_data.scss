@@ -4,8 +4,6 @@
 
 /* -------------------------------------------------------------------- ASIDE --- */
 aside.data {
-    position: absolute;
-    z-index: 2;
     overflow: hidden;
     background-color: white;
     box-shadow: 0 0 24px rgba($grey9, 0.125);
@@ -54,7 +52,7 @@ aside.data::after {
 }
 
 /* ------------------------------------------------------------------- SCROLL --- */
-aside.data > div {
+aside.data .scroll {
     display: flex;
     @media (max-width: $break1) and (min-width: ($break0 + 1px)) {
         height: 100%;
@@ -135,53 +133,6 @@ aside.data .group .item:not(:nth-of-type(-n+2)) {
 }
 
 /* -------------------------------------------------------------------- VALUE --- */
-aside.data .value {
-    color: $grey9;
-    font-size: 16px;
-    font-weight: 600;
-}
 aside.data .item:nth-of-type(4) .value {
     font-weight: 800;
-}
-aside.data .group.time .value {
-    display: flex;
-}
-aside.data .value::after {
-    margin-left: 0.25em;
-    color: $grey6;
-    font-size: 50%;
-    font-weight: 600;
-    letter-spacing: 0.1em;
-}
-aside.data .group.distance .value::after {
-    content: 'KM';
-}
-aside.data .group.speed .value::after {
-    content: 'KM/H';
-}
-aside.data .group.pace .value::after {
-    content: '/KM';
-}
-aside.data .group.elevation .value::after {
-    content: 'M';
-}
-
-/* --------------------------------------------------------------------- TIME --- */
-aside.data .group.time .value div:not(:last-child) {
-    margin-right: 4px;
-}
-aside.data .group.time .value div::after {
-    margin-left: 0.25em;
-    color: $grey6;
-    font-size: 50%;
-    font-weight: 600;
-}
-aside.data .group.time .day::after {
-    content: 'D';
-}
-aside.data .group.time .hour::after {
-    content: 'H';
-}
-aside.data .group.time .minute::after {
-    content: 'M';
 }

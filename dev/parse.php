@@ -8,9 +8,10 @@ foreach (glob(__DIR__ . '/../lib/track/*.gpx') as $file) {
     $file_gpx = __DIR__ . '/../lib/track/' . $name . '.gpx';
     $file_json = __DIR__ . '/../tmp/track/' . $name . '.json';
 
-    if (file_exists($file_json)) continue;
+    // if (file_exists($file_json)) continue;
 
     $track = track_parse($file_gpx);
+    // p($track->split);exit;
     file_put_contents($file_json, json_encode($track, JSON_PARTIAL_OUTPUT_ON_ERROR));
 }
 
@@ -25,6 +26,7 @@ function track_parse($file) {
         'distance' => (object) ['climb' => 0, 'descent' => 0, 'flat' => 0, 'total' => 0,],
         'elevation' => (object) ['min' => INF, 'max' => 0, 'gain' => 0, 'loss' => 0,],
         'speed' => (object) ['climb' => 0, 'descent' => 0, 'flat' => 0, 'average' => 0,],
+        'split' => [],
         'point' => [],
     ];
 
@@ -32,6 +34,8 @@ function track_parse($file) {
     $track->name = $data->name ?? basename($file, implode('', ['.', 'gpx',]));
 
     // trkpt
+    $trkpt_index = 0;
+    $trkpt_count = count($data->trk->trkseg->trkpt);
     foreach ($data->trk->trkseg->trkpt as $trkpt) {
         // point
         $point = (object) ['time' => 0, 'elevation' => 0, 'coordinate' => [],];
@@ -44,8 +48,8 @@ function track_parse($file) {
         $point->coordinate = array_map('floatval', [$trkpt->attributes()->lon, $trkpt->attributes()->lat,]);
 
         // elevation
-        if (!empty($prev)) {
-            $elevation = ($point->elevation - $prev->elevation);
+        if (!empty($prev_point)) {
+            $elevation = ($point->elevation - $prev_point->elevation);
         }
         // elevation min
         if ($point->elevation < $track->elevation->min) {
@@ -56,27 +60,27 @@ function track_parse($file) {
             $track->elevation->max = $point->elevation;
         }
         // elevation gain
-        if (!empty($prev) && $elevation > 0) {
+        if (!empty($prev_point) && $elevation > 0) {
             $track->elevation->gain += $elevation;
         }
         // elevation loss
-        if (!empty($prev) && $elevation < 0) {
+        if (!empty($prev_point) && $elevation < 0) {
             $track->elevation->loss += $elevation;
         }
 
         // point action
         $action = 'flat';
-        if (!empty($prev) && abs($elevation) > 0.25) {
-            if ($point->elevation > $prev->elevation) {
+        if (!empty($prev_point) && abs($elevation) > 0.25) {
+            if ($point->elevation > $prev_point->elevation) {
                 $action = 'climb';
-            } elseif ($point->elevation < $prev->elevation) {
+            } elseif ($point->elevation < $prev_point->elevation) {
                 $action = 'descent';
             }
         }
 
         // distance
-        if (!empty($prev)) {
-            $distance = _dist3d($prev, $point);
+        if (!empty($prev_point)) {
+            $distance = _dist3d($prev_point, $point);
         }
         // distance climb
         if ($action === 'climb') {
@@ -94,7 +98,7 @@ function track_parse($file) {
         $track->distance->total += $distance;
 
         // time
-        $time = ($point->time - $prev->time);
+        $time = ($point->time - $prev_point->time);
         $moving = $time < 15 && $distance > 0.25;
         // time start
         if (empty($track->time->start)) {
@@ -119,8 +123,8 @@ function track_parse($file) {
             $track->time->flat += $time;
         }
         // time total
-        if (!empty($prev) && $moving) {
-            $track->time->total += abs(($point->time - $prev->time));
+        if (!empty($prev_point) && $moving) {
+            $track->time->total += abs(($point->time - $prev_point->time));
         }
         
         // speed
@@ -130,9 +134,41 @@ function track_parse($file) {
             $track->speed->max = $speed;
         }
 
+        // split
+        if (count($track->split) < floor(($track->distance->total / 1000))) {
+            // split
+            $split = (object) [
+                'time' => (object) ['start' => null, 'end' => null, ],
+                'elevation' => (object) ['start' => null, 'end' => null,],
+                'distance' => 0,
+            ];
+
+            // time start
+            $split->time->start = !empty($prev_split) ? $prev_split->time->end : $track->point[0]->time;
+            // time end
+            $split->time->end = $point->time;
+            // time total
+            $split->time->total = ($split->time->end - $split->time->start);
+            // elevation start
+            $split->elevation->start = !empty($prev_split) ? $prev_split->elevation->end : $track->point[0]->elevation;
+            // elevation end
+            $split->elevation->end = $point->elevation;
+            // elevation difference
+            $split->elevation->difference = ($split->elevation->end - $split->elevation->start);
+            // distance
+            $split->distance = $track->distance->total;
+
+            // store
+            $prev_split = $split;
+            $track->split []= $split;
+        }
+
         // store
-        $prev = $point;
+        $prev_point = $point;
         $track->point []= $point;
+
+        // index
+        $trkpt_index++;
     }
     
     // speed
@@ -171,4 +207,8 @@ function _dist2d($a, $b) {
 
 function _deg2rad($deg) {
     return (($deg * M_PI) / 180);
+}
+
+function p($v) {
+    echo '<pre>' . print_r($v, 1) . '</pre>';
 }

@@ -4,20 +4,15 @@
 
 /* -------------------------------------------------------------------- ASIDE --- */
 aside.control {
-    position: absolute;
     top: 0;
     right: 0;
-    z-index: 2;
     display: flex;
     padding: 12px;
     align-items: center;
     background-color: white;
     box-shadow: 0 0 24px rgba($grey9, 0.125);
     border-radius: 4px;
-    @media (min-width: ($break1 + 1px)) {
-        margin: 24px;
-    }
-    @media (max-width: $break1) and (min-width: ($break0 + 1px)) {
+    @media (min-width: ($break0 + 1px)) {
         margin: 24px;
     }
     @media (max-width: $break0) {

@@ -239,7 +239,7 @@ function track_init() {
 	track_prepare();
 
 	// listen
-	// track_listen();
+	track_listen();
 }
 
 /* ------------------------------------------------------------------- LISTEN --- */
@@ -335,6 +335,13 @@ function track_listen() {
 		coordinate = track_coordinate(track);
 		// reduce coordinates to bound
 		bound = map_coordinate_bound(coordinate);
+
+		// add active class
+		$('html').addClass('detail_active');
+		
+		// toggle display class
+		$('aside.detail').removeClass('display');
+		$('aside.detail[data-track-name='+ track.name +']').addClass('display');
 
 		// bound
 		map_bound(bound);
@@ -503,7 +510,14 @@ function track_draw_default() {
 
 		// define layer paint
 		paint = { 
-			'line-width': 1.5,
+			'line-width': [
+				'interpolate',
+				['exponential', 1.5],
+				['zoom'],
+				5, 1,
+				13, 2,
+				18, 4,
+			],
 			'line-color': ['get', 'color',],
 		};
 
@@ -653,7 +667,14 @@ function track_feature_hover(track, feature) {
 			'line-join': 'round',
 		},
 		paint: { 
-			'line-width': 4, 
+			'line-width': [
+				'interpolate',
+				['exponential', 1.5],
+				['zoom'],
+				5, 1.5,
+				13, 3,
+				18, 6,
+			],
 			'line-color': feature.properties.color,
 		},
 		filter: ['==', ['get', 'name',], track.name,],
@@ -680,8 +701,15 @@ function track_feature_active(track, feature) {
 			'line-join': 'round',
 		},
 		paint: { 
-			'line-width': 4, 
-			'line-color': 'blue',
+			'line-width': [
+				'interpolate',
+				['exponential', 1.5],
+				['zoom'],
+				5, 2,
+				13, 4,
+				18, 8,
+			],
+			'line-color': '#dd1c77',
 		},
 		filter: ['==', ['get', 'name',], track.name,],
 	};

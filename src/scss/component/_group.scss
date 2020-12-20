@@ -1,0 +1,63 @@
+/* ////////////////////////////////////////////////////////////////////////////// */
+/* //////////////////////////////////////////////////////////////////// GROUP /// */
+/* ////////////////////////////////////////////////////////////////////////////// */
+
+/* -------------------------------------------------------------------- VALUE --- */
+.group .value {
+    color: $grey9;
+    font-size: 16px;
+    font-weight: 600;
+}
+.group .value::after {
+    margin-left: 0.25em;
+    color: $grey6;
+    font-size: 50%;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+}
+
+/* -------------------------------------------------------------- ITEM : TIME --- */
+.group .item.time .value {
+    display: flex;
+}
+.group .item.time .value div:not(:last-child) {
+    margin-right: 4px;
+}
+.group .item.time .value div::after {
+    margin-left: 0.25em;
+    color: $grey6;
+    font-size: 50%;
+    font-weight: 600;
+}
+.group .item.time .day::after {
+    content: 'D';
+}
+.group .item.time .hour::after {
+    content: 'H';
+}
+.group .item.time .minute::after {
+    content: 'M';
+}
+.group .item.time .second::after {
+    content: 'S';
+}
+
+/* ---------------------------------------------------------- ITEM : DISTANCE --- */
+.group .item.distance .value::after {
+    content: 'KM';
+}
+
+/* ------------------------------------------------------------- ITEM : SPEED --- */
+.group .item.speed .value::after {
+    content: 'KM/H';
+}
+
+/* -------------------------------------------------------------- ITEM : PACE --- */
+.group .item.pace .value::after {
+    content: '/KM';
+}
+
+/* --------------------------------------------------------- ITEM : ELEVATION --- */
+.group .item.elevation .value::after {
+    content: 'M';
+}

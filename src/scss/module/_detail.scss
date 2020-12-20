@@ -1,0 +1,158 @@
+/* ////////////////////////////////////////////////////////////////////////////// */
+/* /////////////////////////////////////////////////////////////////// DETAIL /// */
+/* ////////////////////////////////////////////////////////////////////////////// */
+
+/* ------------------------------------------------------------------- DETAIL --- */
+aside.detail {
+    @media (min-width: ($break1 + 1px)) {
+        top: 0;
+        left: 0;
+        display: none;
+        width: 320px;
+        height: calc((100% - 222px));
+        margin: 24px;
+        overflow: hidden;
+        flex-flow: column;
+    }
+    @media (max-width: $break1) {
+        display: none;
+    }
+}
+aside.detail.display {
+    @media (min-width: ($break1 + 1px)) {
+        display: flex;
+    }
+}
+aside.detail > div {
+    max-height: 100%;
+    background-color: white;
+    box-shadow: 0 0 24px rgba($grey9, 0.125);
+    border-radius: 4px;
+}
+
+/* ------------------------------------------------------------------- SCROLL --- */
+aside.detail .scroll {
+    display: flex;
+    width: calc(100% + 32px);
+    height: 100%;
+    padding-right: 32px;
+    overflow: scroll;
+    flex-flow: column;
+}
+
+/* ------------------------------------------------------------------ HEADING --- */
+aside.detail h2 {
+    position: sticky;
+    top: 0;
+    padding: 12px 0 12px;
+    flex-basis: 100%;
+    color: $grey9;
+    background-color: white;
+}
+aside.detail h3 {
+    margin-bottom: 6px;
+    color: $grey6;
+}
+aside.detail h3::after {
+    display: inline-block;
+    margin-left: 4px;
+    color: $grey3;
+    font-size: 8px;
+    font-weight: 400;
+}
+
+/* -------------------------------------------------------------------- GROUP --- */
+aside.detail .group {
+    display: flex;
+    flex-wrap: wrap;
+    @media (min-width: ($break1 + 1px)) {
+        padding: 12px 24px 24px;
+    }
+}
+aside.detail .group:not(:last-child) {
+    border-bottom: 1px solid $grey0;
+}
+
+/* ------------------------------------------------------------- GROUP : STAT --- */
+aside.detail .group.stat {
+    justify-content: space-between;
+}
+aside.detail .group.stat .item {
+    width: calc(((1 / 3) * 100%));
+    padding: 2px;
+}
+aside.detail .group.stat .item:not(:nth-last-of-type(-n+3)) {
+    padding-bottom: 8px;
+}
+aside.detail .group.stat .item:not(:nth-of-type(3n+1)) {
+    padding-left: 12px;
+}
+aside.detail .group.stat .item:not(:nth-of-type(3n-3)) {
+    padding-right: 12px;
+    border-right: 1px solid $grey0;
+}
+aside.detail .group.stat .item:not(:nth-of-type(-n+3)) {
+    padding-top: 8px;
+    border-top: 1px solid $grey0;
+}
+aside.detail .group.stat .item.speed h3::after,
+aside.detail .group.stat .item.pace h3::after {
+    content: '(Avg)';
+}
+
+/* ------------------------------------------------------------ GROUP : SPLIT --- */
+aside.detail .group.split table {
+    width: 100%;
+    margin-top: 4px;
+    table-layout: fixed;
+}
+aside.detail .group.split table th {
+    padding-bottom: 8px;
+    color: $grey6;
+    font-size: 10px;
+}
+aside.detail .group.split table th.km {
+    width: 40px;
+}
+aside.detail .group.split table th.pace {
+    width: 56px;
+}
+aside.detail .group.split table th.elevation {
+    width: 32px;
+    text-align: right;
+}
+aside.detail .group.split table th.pace::after {
+    margin-left: 0.5em;
+    content: 'KM/H';
+    font-size: 62.5%;
+}
+aside.detail .group.split table td {
+    color: $grey9;
+    font-size: 10px;
+    font-variant-numeric: tabular-nums;
+    vertical-align: middle;
+}
+aside.detail .group.split table tr.fastest td {
+    font-weight: 600;
+}
+aside.detail .group.split table td:not(:last-child) {
+    padding-right: 12px;
+}
+aside.detail .group.split table tr:not(:last-child) td {
+    padding-bottom: 6px;
+}
+aside.detail .group.split table td.elevation {
+    text-align: right;
+}
+aside.detail .group.split table td.elevation:after {
+    margin-left: 0.25em;
+    color: $grey6;
+    content: 'M';
+    font-size: 62.5%;
+}
+aside.detail .group.split table td.delta div {
+    width: calc((#{var(--delta)} * 100%));
+    height: 12px;
+    background-color: $plum6;
+    border-radius: 2px;
+}
