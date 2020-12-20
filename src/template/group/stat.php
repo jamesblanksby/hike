@@ -8,7 +8,9 @@
                 <div class="hour"><?= $value->hour; ?></div>
             <?php endif; ?>
             <div class="minute"><?= $value->minute; ?></div>
-            <div class="second"><?= $value->second; ?></div>
+            <?php if (empty($value->hour)) : ?>
+                <div class="second"><?= $value->second; ?></div>
+            <?php endif; ?>
         </div>
     </div>
     <div class="item time">
@@ -19,7 +21,9 @@
                 <div class="hour"><?= $value->hour; ?></div>
             <?php endif; ?>
             <div class="minute"><?= $value->minute; ?></div>
-            <div class="second"><?= $value->second; ?></div>
+            <?php if (empty($value->hour)) : ?>
+                <div class="second"><?= $value->second; ?></div>
+            <?php endif; ?>
         </div>
     </div>
     <div class="item distance">
