@@ -8,10 +8,9 @@ foreach (glob(__DIR__ . '/../lib/track/*.gpx') as $file) {
     $file_gpx = __DIR__ . '/../lib/track/' . $name . '.gpx';
     $file_json = __DIR__ . '/../tmp/track/' . $name . '.json';
 
-    // if (file_exists($file_json)) continue;
+    if (file_exists($file_json)) continue;
 
     $track = track_parse($file_gpx);
-    // p($track->split);exit;
     file_put_contents($file_json, json_encode($track, JSON_PARTIAL_OUTPUT_ON_ERROR));
 }
 
