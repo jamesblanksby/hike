@@ -138,7 +138,7 @@ function track_parse($file) {
         if (count($track->split) < floor(($track->distance->total / 1000))) {
             // split
             $split = (object) [
-                'time' => (object) ['start' => null, 'end' => null, ],
+                'time' => (object) ['start' => null, 'end' => null, 'moving' => null, 'total' => null,],
                 'elevation' => (object) ['start' => null, 'end' => null,],
                 'distance' => 0,
             ];
@@ -147,6 +147,9 @@ function track_parse($file) {
             $split->time->start = !empty($prev_split) ? $prev_split->time->end : $track->point[0]->time;
             // time end
             $split->time->end = $point->time;
+            // time moving
+            $prev_moving = array_sum(array_map(function($split) { return $split->time->moving; }, $track->split));
+            $split->time->moving = !empty($prev_split) ? ($track->time->moving - $prev_moving) : $track->time->moving;
             // time total
             $split->time->total = ($split->time->end - $split->time->start);
             // elevation start
