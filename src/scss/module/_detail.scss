@@ -48,7 +48,7 @@ aside.detail > div::after {
     width: 100%;
     height: 24px;
     content: '';
-    background-image: linear-gradient(rgba(white, 0), rgba(white, 1));
+    background-image: linear-gradient(rgba(white, 0), rgba(white, 1) 75%, rgba(white, 1) 100%);
     border-radius: 0 0 4px 4px;
 }
 
