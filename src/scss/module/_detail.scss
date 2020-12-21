@@ -54,17 +54,16 @@ aside.detail > div::after {
 
 /* ------------------------------------------------------------------- SCROLL --- */
 aside.detail .scroll {
-    display: flex;
     width: calc(100% + 32px);
     max-height: 100%;
+    padding-top: 74px;
     padding-right: 32px;
     overflow: scroll;
-    flex-flow: column;
 }
 
 /* --------------------------------------------------------------------- META --- */
 aside.detail .meta {
-    position: sticky;
+    position: absolute;
     top: 0;
     z-index: 2;
     display: flex;
@@ -97,7 +96,7 @@ aside.detail .meta time.time::after {
 /* ------------------------------------------------------------------ HEADING --- */
 aside.detail h2 {
     position: sticky;
-    top: 74px;
+    top: 0;
     width: calc((100% + 48px));
     padding: 8px 24px 12px;
     margin: 0 -24px;
