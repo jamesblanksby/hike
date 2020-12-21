@@ -31,7 +31,8 @@ function track_parse($file) {
     ];
 
     // name
-    $track->name = $data->metadata->name ?? $data->trk->name ?? basename($file, implode('', ['.', 'gpx',]));
+    $track->name = $data->metadata->name ??$data->trk->name ?? basename($file, implode('', ['.', 'gpx',]));
+    $track->name = (string) $track->name;
 
     // trkpt
     $trkpt_index = 0;
