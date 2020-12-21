@@ -292,11 +292,9 @@ function track_listen() {
 
 	// listen for click
 	MAP.ctx.on('click', 'track-default', async function(event) {
-		var coordinate,
-			feature,
+		var feature,
 			point,
-			track,
-			bound;
+			track;
 		
 		// store event point
 		point = event.transformedPoint;
@@ -316,35 +314,24 @@ function track_listen() {
 		// track
 		track = JSON.parse(feature.properties.track);
 
-		// add track active state
-		TRACK.state.active = feature;
-		track_feature_active(track, feature);
+		// active
+		track_active(track, feature);
 
-		// store track point coordinate
-		coordinate = track_coordinate(track);
-		// reduce coordinates to bound
-		bound = map_coordinate_bound(coordinate);
-
-		// add active class
-		$('html').addClass('detail_active');
-		// remove display class
-		$('aside.detail').removeClass('display');
-
-		// bound
-		map_bound(bound);
-
-		// listen for moveend
-		MAP.ctx.once('moveend', function() {
-			// add display class
-			$('aside.detail[data-track-id='+ track.id +']').addClass('display');
-		});
+		// update url
+		history.replaceState({}, {}, [ROOT_URL, ['track', track.id,].join('/'),].join('/'));
 	});
 }
 
 /* ------------------------------------------------------------------ PREPARE --- */
 function track_prepare() {
 	(async function() {
-		var track;
+		var feature,
+			active,
+			track,
+			id;
+
+		// store url id
+		id = location.href.split('/').pop();
 
 		// loop through file paths
 		for (var i = 0; i < FILE.length; i ++) {
@@ -356,10 +343,23 @@ function track_prepare() {
 		}
 
 		// draw
-		track_draw();
+		await track_draw();
 
+		// attempt to retrieve active track
+		active = $.grep(TRACK.item, function(track) { return track.id === id; })[0];
+
+		// determine whether active track exists
+		if (typeof active !== 'undefined') {
+			// retrieve feature from source features
+			feature = $.grep(MAP.ctx.querySourceFeatures('track', { sourceLayer: 'track-default', }), function(feature) {
+				return feature.properties.id === active.id;
+			});
+
+			// track
+			track_active(active, feature);
+		}
 		// center
-		track_center();
+		else track_center();
 	})();
 }
 
@@ -446,9 +446,6 @@ function track_color(track) {
 
 /* -------------------------------------------------------------------- STYLE --- */
 function track_style() {
-	// reset detail aside
-	track_detail_reset();
-
 	// toggle style
 	if (TRACK.style === 'default') TRACK.style = 'heatmap';
 	else if (TRACK.style === 'heatmap') TRACK.style = 'default';
@@ -464,9 +461,6 @@ function track_style() {
 function track_center() {
 	var coordinate,
 		bound;
-
-	// reset detail aside
-	track_detail_reset();
 
 	// merge track coordinate
 	coordinate = TRACK.item.flatMap(function(track) { return track_coordinate(track); })
@@ -497,15 +491,51 @@ function track_layer(id, paint) {
 
 /* --------------------------------------------------------------------- DRAW --- */
 function track_draw() {
-	// default
-	if (TRACK.style === 'default') track_draw_default();
-	// heatmap
-	else if (TRACK.style === 'heatmap') track_draw_heatmap();
+	// promise
+	return new Promise(async function(resolve, reject) {
+		// default
+		if (TRACK.style === 'default') await track_draw_default();
+		// heatmap
+		else if (TRACK.style === 'heatmap') await track_draw_heatmap();
+
+		// resolve
+		resolve();
+	});
+}
+
+/* ------------------------------------------------------------------- ACTIVE --- */
+function track_active(track, feature) {
+	var coordinate,
+		bound;
+
+	// add track active state
+	TRACK.state.active = feature;
+	track_feature_active(track, feature);
+
+	// store track point coordinate
+	coordinate = track_coordinate(track);
+	// reduce coordinates to bound
+	bound = map_coordinate_bound(coordinate);
+
+	// add active class
+	$('html').addClass('detail_active');
+	// remove display class
+	$('aside.detail').removeClass('display');
+
+	// bound
+	map_bound(bound);
+
+	// listen for moveend
+	MAP.ctx.once('moveend', function() {
+		// add display class
+		$('aside.detail[data-track-id='+ track.id +']').addClass('display');
+	});
 }
 
 /* ----------------------------------------------------------- DRAW : DEFAULT --- */
 function track_draw_default() {
-	(async function() {
+	// promise
+	return new Promise(async function(resolve, reject) {
 		var paint,
 			style,
 			layer;
@@ -540,12 +570,16 @@ function track_draw_default() {
 		layer = track_layer('track-default', paint);
 		// append layer to map
 		MAP.ctx.addLayer(layer, 'waterway-label');
-	})();
+
+		// resolve
+		MAP.ctx.once('idle', resolve);
+	});
 }
 
 /* ----------------------------------------------------------- DRAW : HEATMAP --- */
 function track_draw_heatmap() {
-	(async function() {
+	// promise
+	return new Promise(async function(resolve, reject) {
 		var paint,
 			style,
 			layer;
@@ -647,7 +681,10 @@ function track_draw_heatmap() {
 		layer = track_layer('track-heatmap-base', paint);
 		// append layer to map
 		MAP.ctx.addLayer(layer, 'track-heatmap-density');
-	})();
+
+		// resolve
+		MAP.ctx.once('idle', resolve);
+	});
 }
 
 /* ---------------------------------------------------------- FEATURE : HOVER --- */
@@ -747,6 +784,9 @@ function track_detail_reset() {
 	$('html').removeClass('detail_active');
 	// remove display class
 	$('aside.detail').removeClass('display');
+
+	// purge url
+	history.replaceState({}, {}, ROOT_URL);
 }
 
 
@@ -824,7 +864,20 @@ function control_listen() {
 	$control = $('aside.control');
 
 	// listen for click
-	$control.find('[data-func=track_center]').on('click', track_center);
+	$control.find('[data-func=track_center]').on('click', function() {
+		// reset detail aside
+		track_detail_reset();
+
+		// center
+		track_center();
+	});
+	
 	// listen for click
-	$control.find('[data-func=track_style]').on('click', track_style);
+	$control.find('[data-func=track_style]').on('click', function() {
+		// reset detail aside
+		track_detail_reset();
+		
+		// style
+		track_style();
+	});
 }
