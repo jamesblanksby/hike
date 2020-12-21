@@ -7,12 +7,16 @@ aside.detail {
     @media (min-width: ($break1 + 1px)) {
         top: 0;
         left: 0;
-        display: none;
+        display: flex;
         width: 320px;
         height: calc((100% - 222px));
         margin: 24px;
         overflow: hidden;
         flex-flow: column;
+        transform: translateX(calc(((100% + 24px) * -1)));
+        transition: transform 160ms;
+        will-change: transform;
+        pointer-events: none;
     }
     @media (max-width: $break1) {
         display: none;
@@ -20,7 +24,7 @@ aside.detail {
 }
 aside.detail.display {
     @media (min-width: ($break1 + 1px)) {
-        display: flex;
+        transform: translateX(0);
     }
 }
 aside.detail > div {
@@ -28,6 +32,7 @@ aside.detail > div {
     background-color: white;
     box-shadow: 0 0 24px rgba($grey9, 0.125);
     border-radius: 4px;
+    pointer-events: all;
 }
 
 /* ------------------------------------------------------------------- SCROLL --- */
