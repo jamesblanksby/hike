@@ -31,7 +31,8 @@ foreach ($file_array as $file) {
                     <div class="scroll">
                         <div class="meta">
                             <h1><?= $track->name; ?></h1>
-                            <time><?= date('jS F Y', $track->time->start); ?></time>
+                            <time class="date"><?= date('jS F Y', $track->time->start); ?></time>
+                            <time class="time"><?= implode(' &mdash; ', [date('H:i', $track->time->start), date('H:i', $track->time->end),]); ?></time>
                         </div>
                         <?php include ROOT_DIR . path('src', 'template', 'group', 'stat.php'); ?>
                         <?php include ROOT_DIR . path('src', 'template', 'group', 'split.php'); ?>

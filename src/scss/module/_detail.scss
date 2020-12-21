@@ -67,16 +67,31 @@ aside.detail .meta {
     position: sticky;
     top: 0;
     z-index: 2;
+    display: flex;
     padding: 24px 24px 12px;
+    flex-wrap: wrap;
     background-color: white;
 }
 aside.detail .meta h1 {
     margin-bottom: 8px;
+    flex-basis: 100%;
     color: $grey9;
 }
-aside.detail .meta time {
+aside.detail .meta time.date {
+    margin-right: 0.25em;
     color: $grey6;
     font-size: 12px;
+}
+aside.detail .meta time.time {
+    margin-top: 1px;
+    color: $grey3;
+    font-size: 10px;
+}
+aside.detail .meta time.time::before {
+    content: '(';
+}
+aside.detail .meta time.time::after {
+    content: ')';
 }
 
 /* ------------------------------------------------------------------ HEADING --- */
