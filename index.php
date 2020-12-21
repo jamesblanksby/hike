@@ -29,6 +29,10 @@ foreach ($file_array as $file) {
             <aside class="detail" data-track-id="<?= $track->id; ?>">
                 <div>
                     <div class="scroll">
+                        <div class="meta">
+                            <h1><?= $track->name; ?></h1>
+                            <time><?= date('jS F Y', $track->time->start); ?></time>
+                        </div>
                         <?php include ROOT_DIR . path('src', 'template', 'group', 'stat.php'); ?>
                         <?php include ROOT_DIR . path('src', 'template', 'group', 'split.php'); ?>
                     </div>

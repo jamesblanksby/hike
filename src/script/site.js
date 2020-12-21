@@ -17,6 +17,9 @@ function init() {
 		// track
 		track_init();
 
+		// detail
+		detail_init();
+
 		// control
 		control_init();
 	})();
@@ -744,6 +747,62 @@ function track_detail_reset() {
 	$('html').removeClass('detail_active');
 	// remove display class
 	$('aside.detail').removeClass('display');
+}
+
+
+/* ////////////////////////////////////////////////////////////////////////////// */
+/* /////////////////////////////////////////////////////////////////// DETAIL /// */
+/* ////////////////////////////////////////////////////////////////////////////// */
+
+/* --------------------------------------------------------------------- INIT --- */
+function detail_init() {
+	// sticky
+	detail_sticky();
+}
+
+/* ------------------------------------------------------------------- STICKY --- */
+function detail_sticky() {
+	// listen for scroll
+	$('aside.detail').find('.scroll').on('scroll', function() {
+		var $detail,
+			$meta;
+		var scroll,
+			height;
+
+		// cache elements
+		$detail = $(this).closest('aside.detail');
+		$meta = $detail.find('.meta');
+
+		// store scroll
+		scroll = $detail.find('.scroll').scrollTop();
+
+		// bail when scroll at top
+		if (scroll === 0) {
+			// remove stuck attribute
+			$detail.find('h2').removeAttr('stuck');
+			
+			return;
+		}
+
+		// store meta height
+		height = $meta.outerHeight();
+
+		// loop though heading
+		$detail.find('h2').each(function() {
+			var $h2;
+			var offset;
+
+			// cache element
+			$h2 = $(this);
+
+			// store heading offset
+			offset = $h2.position().top;
+
+			// toggle stuck attribute
+			if ((offset - height) === 0) $h2.attr('stuck', '');
+			else $h2.removeAttr('stuck');
+		});
+	});
 }
 
 
