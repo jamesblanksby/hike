@@ -7,6 +7,18 @@ $track_array = [];
 foreach ($file_array as $file) {
     $track_array []= json_decode(file_get_contents(ROOT_DIR . path(DIR_TMP, 'track', $file)));
 }
+
+$tmp_array = $track_array;
+usort($tmp_array, function($a, $b) { return ($b->distance->total - $a->distance->total); });
+$award_distance = array_slice($tmp_array, 0, 3);
+
+$tmp_array = $track_array;
+usort($tmp_array, function($a, $b) { return ($b->elevation->gain - $a->elevation->gain); });
+$award_elevation = array_slice($tmp_array, 0, 3);
+
+$tmp_array = $track_array;
+usort($tmp_array, function($a, $b) { return ($b->time->moving - $a->time->moving); });
+$award_time = array_slice($tmp_array, 0, 3);
 ?>
 
 <!-- top -->
@@ -25,7 +37,7 @@ foreach ($file_array as $file) {
 
     <!-- detail -->
     <?php if (!empty($track_array)) : ?>
-        <?php foreach ($track_array as $track) : ?>
+        <?php foreach ($track_array as $index => $track) : ?>
             <aside class="detail" data-track-id="<?= $track->id; ?>">
                 <div>
                     <div class="scroll">
@@ -36,6 +48,7 @@ foreach ($file_array as $file) {
                         </div>
                         <?php include ROOT_DIR . path('src', 'template', 'group', 'stat.php'); ?>
                         <?php include ROOT_DIR . path('src', 'template', 'group', 'split.php'); ?>
+                        <?php include ROOT_DIR . path('src', 'template', 'group', 'award.php'); ?>
                     </div>
                 </div>
             </aside>
