@@ -47,8 +47,8 @@ $award_time = array_slice($tmp_array, 0, 3);
                             <time class="time"><?= implode(' &mdash; ', [date('H:i', $track->time->start), date('H:i', $track->time->end),]); ?></time>
                         </div>
                         <?php include ROOT_DIR . path('src', 'template', 'group', 'stat.php'); ?>
-                        <?php include ROOT_DIR . path('src', 'template', 'group', 'split.php'); ?>
                         <?php include ROOT_DIR . path('src', 'template', 'group', 'award.php'); ?>
+                        <?php include ROOT_DIR . path('src', 'template', 'group', 'split.php'); ?>
                     </div>
                 </div>
             </aside>
