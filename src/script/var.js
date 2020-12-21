@@ -9,6 +9,7 @@ var MAPBOX = {};
 /* ---------------------------------------------------------------------- MAP --- */
 var MAP = {};
 	MAP.ctx = undefined;
+	MAP.event = { flying: false, };
 	MAP.style = {
 		default: 'mapbox://styles/jamesblanksby/ckht3exwv29rd1anysnr4h59a',
 		heatmap: 'mapbox://styles/jamesblanksby/ckh99rzt7260819odgvjykhpi',
@@ -18,4 +19,5 @@ var MAP = {};
 /* -------------------------------------------------------------------- TRACK --- */
 var TRACK = {};
 	TRACK.style = 'default';
+	TRACK.state = { hover: undefined, active: undefined, };
 	TRACK.item = [];

@@ -221,7 +221,7 @@ function map_feature_query(source, point) {
 	var feature;
 
 	// build enlarged click bound
-	bound = [[(point.x - 2), (point.y - 2),], [(point.x + 2), (point.y + 2),]];
+	bound = [[(point.x - 2), (point.y - 2),], [(point.x + 2), (point.y + 2),],];
 	// query bound for feature
 	feature = MAP.ctx.queryRenderedFeatures(bound, { layers: [source,], })[0];
 
@@ -244,8 +244,6 @@ function track_init() {
 
 /* ------------------------------------------------------------------- LISTEN --- */
 function track_listen() {
-	var state = { hover: undefined, active: undefined, };
-
 	// listen for mousemove
 	MAP.ctx.on('mousemove', 'track-default', async function(event) {
 		var feature,
@@ -259,18 +257,12 @@ function track_listen() {
 		feature = map_feature_query('track-default', point);
 
 		// bail when feature is active
-		if (typeof feature !== 'undefined' && typeof state.hover !== 'undefined') return;
+		if (typeof feature !== 'undefined' && typeof TRACK.state.hover !== 'undefined') return;
 
 		// mouseleave feature
-		if (typeof feature === 'undefined' && typeof state.hover !== 'undefined') {
-			var id;
-
-			// generate layer id
-			id = ['track', 'hover', state.hover,].join('-');
-
-			// remove track hover layer
-			MAP.ctx.removeLayer(id);
-			state.hover = undefined;
+		if (typeof feature === 'undefined' && typeof TRACK.state.hover !== 'undefined') {
+			// remove feature state
+			track_feature_remove(TRACK.state.hover, 'hover');
 
 			// unset cursor style
 			MAP.ctx.getCanvas().style.cursor = 'unset';
@@ -282,7 +274,7 @@ function track_listen() {
 		if (typeof feature === 'undefined') return;
 
 		// prevent hover on active state
-		if (feature.id === state.active) return;
+		if (typeof TRACK.state.active !== 'undefined' && feature.id === TRACK.state.active.id) return;
 
 		// set cursor style
 		MAP.ctx.getCanvas().style.cursor = 'pointer';
@@ -291,7 +283,7 @@ function track_listen() {
 		track = JSON.parse(feature.properties.track);
 
 		// add track hover state
-		state.hover = feature.id;
+		TRACK.state.hover = feature;
 		track_feature_hover(track, feature);
 	});
 
@@ -313,22 +305,16 @@ function track_listen() {
 		if (typeof feature === 'undefined') return;
 
 		// determine whether active state should be removed
-		if (typeof state.active !== 'undefined') {
-			var id;
-
-			// generate layer id
-			id = ['track', 'active',].join('-');
-
-			// remove track active layer
-			MAP.ctx.removeLayer(id);
-			state.active = undefined;
+		if (typeof TRACK.state.active !== 'undefined') {
+			// remove feature state
+			track_feature_remove(TRACK.state.active, 'active');
 		}
 
 		// track
 		track = JSON.parse(feature.properties.track);
 
 		// add track active state
-		state.active = feature.id;
+		TRACK.state.active = feature;
 		track_feature_active(track, feature);
 
 		// store track point coordinate
@@ -338,13 +324,17 @@ function track_listen() {
 
 		// add active class
 		$('html').addClass('detail_active');
-		
-		// toggle display class
+		// remove display class
 		$('aside.detail').removeClass('display');
-		$('aside.detail[data-track-name='+ track.name +']').addClass('display');
 
 		// bound
 		map_bound(bound);
+
+		// listen for moveend
+		MAP.ctx.once('moveend', function() {
+			// add display class
+			$('aside.detail[data-track-name='+ track.name +']').addClass('display');
+		});
 	});
 }
 
@@ -427,16 +417,6 @@ function track_source() {
 	MAP.ctx.addSource('track', source);
 }
 
-/* -------------------------------------------------------------------- STYLE --- */
-function track_style() {
-	// toggle style
-	if (TRACK.style === 'default') TRACK.style = 'heatmap';
-	else if (TRACK.style === 'heatmap') TRACK.style = 'default';
-
-	// draw
-	track_draw();
-}
-
 /* --------------------------------------------------------------- COORDINATE --- */
 function track_coordinate(track) {
 	var coordinate;
@@ -461,10 +441,29 @@ function track_color(track) {
 	return color;
 }
 
+/* -------------------------------------------------------------------- STYLE --- */
+function track_style() {
+	// reset detail aside
+	track_detail_reset();
+
+	// toggle style
+	if (TRACK.style === 'default') TRACK.style = 'heatmap';
+	else if (TRACK.style === 'heatmap') TRACK.style = 'default';
+
+	// draw
+	track_draw();
+
+	// center
+	track_center();
+}
+
 /* ------------------------------------------------------------------- CENTER --- */
 function track_center() {
 	var coordinate,
 		bound;
+
+	// reset detail aside
+	track_detail_reset();
 
 	// merge track coordinate
 	coordinate = TRACK.item.flatMap(function(track) { return track_coordinate(track); })
@@ -689,11 +688,15 @@ function track_feature_hover(track, feature) {
 
 /* --------------------------------------------------------- FEATURE : ACTIVE --- */
 function track_feature_active(track, feature) {
-	var layer;
+	var layer,
+		id;
+
+	// generate layer id
+	id = ['track', 'active', feature.id,].join('-');
 
 	// build map layer
 	layer = {
-		id: 'track-active',
+		id: id,
 		type: 'line',
 		source: 'track',
 		layout: {
@@ -715,6 +718,32 @@ function track_feature_active(track, feature) {
 	};
 	// append layer to map
 	MAP.ctx.addLayer(layer);
+}
+
+/* --------------------------------------------------------- FEATURE : REMOVE --- */
+function track_feature_remove(feature, state) {
+	var id;
+
+	// generate layer id
+	id = ['track', state, feature.id,].join('-');
+
+	// remove track state layer
+	MAP.ctx.removeLayer(id);
+	TRACK.state[state] = undefined;
+}
+
+/* ----------------------------------------------------------- DETAIL : RESET --- */
+function track_detail_reset() {
+	// determine whether active state should be removed
+	if (typeof TRACK.state.active !== 'undefined') {
+		// remove feature state
+		track_feature_remove(TRACK.state.active, 'active');
+	}
+
+	// remove active class
+	$('html').removeClass('detail_active');
+	// remove display class
+	$('aside.detail').removeClass('display');
 }
 
 
