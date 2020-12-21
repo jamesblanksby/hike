@@ -397,8 +397,6 @@ function track_source() {
 		// store current track
 		track = TRACK.item[i];
 
-		console.log(track.id);
-
 		// store track point coordinates
 		coordinate = track_coordinate(track);
 
