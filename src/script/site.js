@@ -712,7 +712,7 @@ function track_feature_active(track, feature) {
 				13, 4,
 				18, 8,
 			],
-			'line-color': '#dd1c77',
+			'line-color': 'rgba(221, 28, 119, 1)',
 		},
 		filter: ['==', ['get', 'name',], track.name,],
 	};
