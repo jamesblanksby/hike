@@ -874,6 +874,9 @@ function control_listen() {
 	
 	// listen for click
 	$control.find('[data-func=track_style]').on('click', function() {
+		// toggle active class
+		$(this).toggleClass('active');
+		
 		// reset detail aside
 		track_detail_reset();
 		

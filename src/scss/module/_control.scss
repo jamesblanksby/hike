@@ -33,14 +33,25 @@ aside.control .action a {
     border: 1px solid $snow6;
     border-radius: 4px;
     transition: border-color 160ms, box-shadow 160ms;
+    will-change: border-color, box-shadow;
 }
 aside.control .action a:not(:last-child) {
     margin-right: 6px;
+}
+aside.control .action a.active {
+    background-color: $plum6;
+    border-color: $plum6;
 }
 aside.control .action a:hover {
     @media (pointer: fine) {
         box-shadow: 0 0 4px rgba($grey9, 0.125);
         border-color: $grey0;
+    }
+}
+aside.control .action a.active:hover {
+    @media (pointer: fine) {
+        box-shadow: 0 0 4px rgba($plum6, 0.5);
+        border-color: $plum9;
     }
 }
 aside.control .action a::before {
@@ -53,6 +64,7 @@ aside.control .action a::before {
     mask-size: contain;
     mask-repeat: no-repeat;
     transition: background-color 160ms;
+    will-change: background-color;
 }
 aside.control .action a.center::before {
     mask-image: url('../gfx/center.svg');
@@ -60,11 +72,14 @@ aside.control .action a.center::before {
 aside.control .action a.style::before {
     mask-image: url('../gfx/style.svg');
 }
+aside.control .action a.style.active::before {
+    background-color: white;
+}
 aside.control .action a.profile::before {
     mask-image: url('../gfx/profile.svg');
 }
-aside.control .action a:hover::before {
+aside.control .action a.profile:hover::before {
     @media (pointer: fine) {
-        background-color: $grey9;
+        background-color: $moss6;
     }
 }
