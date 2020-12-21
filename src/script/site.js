@@ -333,7 +333,7 @@ function track_listen() {
 		// listen for moveend
 		MAP.ctx.once('moveend', function() {
 			// add display class
-			$('aside.detail[data-track-name='+ track.name +']').addClass('display');
+			$('aside.detail[data-track-id='+ track.id +']').addClass('display');
 		});
 	});
 }
@@ -397,6 +397,8 @@ function track_source() {
 		// store current track
 		track = TRACK.item[i];
 
+		console.log(track.id);
+
 		// store track point coordinates
 		coordinate = track_coordinate(track);
 
@@ -406,7 +408,7 @@ function track_source() {
 		// build source feature
 		feature = {
 			type: 'Feature',
-			properties: { name: track.name, color: color, track: JSON.stringify(track), },
+			properties: { id: track.id, color: color, track: JSON.stringify(track), },
 			geometry: { type: 'LineString', coordinates: coordinate, },
 		};
 		// add feature to source
@@ -676,7 +678,7 @@ function track_feature_hover(track, feature) {
 			],
 			'line-color': feature.properties.color,
 		},
-		filter: ['==', ['get', 'name',], track.name,],
+		filter: ['==', ['get', 'id',], track.id,],
 	};
 
 	// determine whether to place layer before track active layer
@@ -714,7 +716,7 @@ function track_feature_active(track, feature) {
 			],
 			'line-color': 'rgba(221, 28, 119, 1)',
 		},
-		filter: ['==', ['get', 'name',], track.name,],
+		filter: ['==', ['get', 'id',], track.id,],
 	};
 	// append layer to map
 	MAP.ctx.addLayer(layer);

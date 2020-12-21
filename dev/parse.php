@@ -20,6 +20,7 @@ function track_parse($file) {
 
     // track
     $track = (object) [
+        'id' => _guid(),
         'name' => null,
         'time' => (object) ['start' => 0, 'end' => 0, 'moving' => 0, 'climb' => 0, 'descent' => 0, 'flat' => 0, 'total' => 0,],
         'distance' => (object) ['climb' => 0, 'descent' => 0, 'flat' => 0, 'total' => 0,],
@@ -30,7 +31,7 @@ function track_parse($file) {
     ];
 
     // name
-    $track->name = $data->name ?? basename($file, implode('', ['.', 'gpx',]));
+    $track->name = $data->metadata->name ?? $data->trk->name ?? basename($file, implode('', ['.', 'gpx',]));
 
     // trkpt
     $trkpt_index = 0;
@@ -186,6 +187,21 @@ function track_parse($file) {
     $track->speed->average = (($track->distance->total / 1000) / ($track->time->moving / 3600));
 
     return $track;
+}
+
+function _guid() {
+    return strtolower(
+        sprintf('%04X%04X-%04X-%04X-%04X-%04X%04X%04X',
+            mt_rand(0, 65535),
+            mt_rand(0, 65535),
+            mt_rand(0, 65535),
+            mt_rand(16384, 20479),
+            mt_rand(32768, 49151),
+            mt_rand(0, 65535),
+            mt_rand(0, 65535),
+            mt_rand(0, 65535)
+        )
+    );
 }
 
 function _dist3d($a, $b) {

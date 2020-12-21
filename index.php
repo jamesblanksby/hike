@@ -26,7 +26,7 @@ foreach ($file_array as $file) {
     <!-- detail -->
     <?php if (!empty($track_array)) : ?>
         <?php foreach ($track_array as $track) : ?>
-            <aside class="detail" data-track-name="<?= $track->name; ?>">
+            <aside class="detail" data-track-id="<?= $track->id; ?>">
                 <div>
                     <div class="scroll">
                         <?php include ROOT_DIR . path('src', 'template', 'group', 'stat.php'); ?>
