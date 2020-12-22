@@ -536,22 +536,9 @@ function track_active(track, feature) {
 function track_draw_default() {
 	// promise
 	return new Promise(async function(resolve, reject) {
-		var paint,
-			style,
+		var style,
+			paint,
 			layer;
-
-		// define layer paint
-		paint = { 
-			'line-width': [
-				'interpolate',
-				['exponential', 1.5],
-				['zoom'],
-				5, 1,
-				13, 2,
-				18, 4,
-			],
-			'line-color': ['get', 'color',],
-		};
 
 		// store style
 		style = MAP.style[TRACK.style];
@@ -565,6 +552,19 @@ function track_draw_default() {
 
 		// rebuild source
 		track_source();
+
+		// define layer paint
+		paint = { 
+			'line-width': [
+				'interpolate',
+				['exponential', 1.5],
+				['zoom'],
+				5, 1,
+				13, 2,
+				18, 4,
+			],
+			'line-color': ['get', 'color',],
+		};
 
 		// layer
 		layer = track_layer('track-default', paint);
@@ -580,16 +580,9 @@ function track_draw_default() {
 function track_draw_heatmap() {
 	// promise
 	return new Promise(async function(resolve, reject) {
-		var paint,
-			style,
-			layer;
-
-		// define layer paint
-		paint = { 
-			'line-width': 1.5,
-			'line-color': 'rgba(152, 0, 67, 1)',
-			'line-opacity': 0.375,
-		};
+		var style,
+			layer,
+			paint;
 
 		// store style
 		style = MAP.style[TRACK.style];
@@ -676,6 +669,13 @@ function track_draw_heatmap() {
 		};
 		// append layer to map
 		MAP.ctx.addLayer(layer, 'waterway-label');
+
+		// define layer paint
+		paint = { 
+			'line-width': 1.5,
+			'line-color': 'rgba(152, 0, 67, 1)',
+			'line-opacity': 0.375,
+		};
 
 		// layer
 		layer = track_layer('track-heatmap-base', paint);
