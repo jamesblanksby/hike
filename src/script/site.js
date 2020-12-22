@@ -325,9 +325,9 @@ function track_listen() {
 /* ------------------------------------------------------------------ PREPARE --- */
 function track_prepare() {
 	(async function() {
-		var feature,
+		var promises = [],
+			feature,
 			active,
-			track,
 			id;
 
 		// store url id
@@ -336,11 +336,11 @@ function track_prepare() {
 		// loop through file paths
 		for (var i = 0; i < FILE.length; i ++) {
 			// request
-			track = await track_request(FILE[i]);
-
-			// store track data
-			TRACK.item.push(track);
+			promises.push(track_request(FILE[i]));
 		}
+
+		// store track data
+		TRACK.item = await Promise.all(promises);
 
 		// draw
 		await track_draw();
