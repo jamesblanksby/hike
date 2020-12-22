@@ -353,7 +353,7 @@ function track_prepare() {
 			// retrieve feature from source features
 			feature = $.grep(MAP.ctx.querySourceFeatures('track', { sourceLayer: 'track-default', }), function(feature) {
 				return feature.properties.id === active.id;
-			});
+			})[0];
 
 			// track
 			track_active(active, feature);
