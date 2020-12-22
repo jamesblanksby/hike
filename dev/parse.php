@@ -158,7 +158,7 @@ function track_parse($file) {
             // elevation end
             $split->elevation->end = $point->elevation;
             // elevation difference
-            $split->elevation->difference = ($split->elevation->end - $split->elevation->start);
+            $split->elevation->difference = round(($split->elevation->end - $split->elevation->start), 2);
             // distance
             $split->distance = $track->distance->total;
 
