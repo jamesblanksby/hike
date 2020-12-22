@@ -721,6 +721,7 @@ function track_feature_hover(track, feature) {
 
 	// determine whether to place layer before track active layer
 	if (MAP.ctx.getLayer('track-active')) before = 'track-active';
+	else before = 'waterway-label';
 
 	// append layer to map
 	MAP.ctx.addLayer(layer, before);
@@ -757,7 +758,7 @@ function track_feature_active(track, feature) {
 		filter: ['==', ['get', 'id',], track.id,],
 	};
 	// append layer to map
-	MAP.ctx.addLayer(layer);
+	MAP.ctx.addLayer(layer, 'waterway-label');
 }
 
 /* --------------------------------------------------------- FEATURE : REMOVE --- */
