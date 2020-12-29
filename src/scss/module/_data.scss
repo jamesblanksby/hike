@@ -5,27 +5,27 @@
 /* -------------------------------------------------------------------- ASIDE --- */
 aside.data {
     bottom: 0;
-    z-index: 3;
+    z-index: 2;
     overflow: hidden;
     background-color: white;
     box-shadow: 0 0 24px rgba($grey9, 0.125);
-    @media (min-width: ($break0 + 1px)) {
+    @media (min-width: ($break2 + 1px)), (max-width: $break2) and (min-width: ($break1 + 1px)) {
         left: 50%;
         border-radius: 4px;
         transform: translateX(-50%);
     }
-    @media (min-width: ($break1 + 1px)) {
-        width: calc(100% - 48px);
+    @media (min-width: ($break2 + 1px)) {
+        width: calc((100% - 48px));
         height: 150px;
         max-width: 1232px;
         margin-bottom: 24px;
     }
-    @media (max-width: $break1) and (min-width: ($break0 + 1px)) {
-        width: calc(100% - 32px);
+    @media (max-width: $break2) and (min-width: ($break1 + 1px)) {
+        width: calc((100% - 32px));
         height: 134px;
         margin-bottom: 16px;
     }
-    @media (max-width: $break0) {
+    @media (max-width: $break1) {
         left: 0;
         width: 100%;
         height: 50%;
@@ -34,56 +34,61 @@ aside.data {
 aside.data::before,
 aside.data::after {
     position: absolute;
+    z-index: 2;
     display: block;
-
-    @media (max-width: $break1) {
+    @media (max-width: $break2) and (min-width: ($break1 + 1px)), (max-width: $break1) {
         content: '';
     }
-    @media (max-width: $break1) and (min-width: ($break0 + 1px)) {
+    @media (max-width: $break2) and (min-width: ($break1 + 1px)) {
         top: 0;
         width: 16px;
         height: 100%;
     }
-    @media (max-width: $break0) {
+    @media (max-width: $break1) {
         left: 0;
         width: 100%;
         height: 16px;
     }
 }
 aside.data::before {
-    @media (max-width: $break1) and (min-width: ($break0 + 1px)) {
+    @media (max-width: $break2) and (min-width: ($break1 + 1px)) {
         left: 0;
-        background-image: linear-gradient(-90deg, rgba(white, 0), rgba(white, 1) 75%, rgba(white, 1) 100%);
+        background-image: linear-gradient(-90deg, $scroll-feather);
     }
-    @media (max-width: $break0) {
+    @media (max-width: $break1) {
         top: 0;
-        background-image: linear-gradient(0deg, rgba(white, 0), rgba(white, 1) 75%, rgba(white, 1) 100%);
+        background-image: linear-gradient(0deg, $scroll-feather);
     }
 }
 aside.data::after {
-    @media (max-width: $break1) and (min-width: ($break0 + 1px)) {
+    @media (max-width: $break2) and (min-width: ($break1 + 1px)) {
         right: 0;
-        background-image: linear-gradient(90deg, rgba(white, 0), rgba(white, 1) 75%, rgba(white, 1) 100%);
+        background-image: linear-gradient(90deg, $scroll-feather);
     }
-    @media (max-width: $break0) {
+    @media (max-width: $break1) {
         bottom: 0;
-        background-image: linear-gradient(180deg, rgba(white, 0), rgba(white, 1) 75%, rgba(white, 1) 100%);
+        background-image: linear-gradient(180deg, $scroll-feather);
     }
+}
+
+html.detail_active aside.data {
+    box-shadow: unset;
 }
 
 /* ------------------------------------------------------------------- SCROLL --- */
 aside.data .scroll {
     display: flex;
-    @media (max-width: $break1) {
+    @media (max-width: $break2) and (min-width: ($break1 + 1px)), (max-width: $break1) {
         overflow: auto;
     }
-    @media (max-width: $break1) and (min-width: ($break0 + 1px)) {
-        height: calc(100% + 32px);
+    @media (max-width: $break2) and (min-width: ($break1 + 1px)) {
+        width: 100%;
+        height: calc((100% + 32px));
         padding-bottom: 32px;
         scroll-snap-type: x proximity;
     }
-    @media (max-width: $break0) {
-        width: calc(100% + 32px);
+    @media (max-width: $break1) {
+        width: calc((100% + 32px));
         height: 100%;
         padding-right: 32px;
         flex-flow: column;
@@ -92,9 +97,25 @@ aside.data .scroll {
 
 /* ------------------------------------------------------------------ HEADING --- */
 aside.data h2 {
-    margin-bottom: 12px;
-    flex-basis: 100%;
     color: $grey9;
+    @media (min-width: ($break1 + 1px)) {
+        margin-bottom: 12px;
+        flex-basis: 100%;
+    }
+    @media (max-width: $break1) {
+        position: sticky;
+        top: 0;
+        z-index: 1;
+        width: calc((100% + 32px));
+        padding: 12px 16px;
+        margin: 0 -16px;
+        background-color: white;
+    }
+}
+aside.data h2[stuck] {
+    @media (max-width: $break1) {
+        box-shadow: 0 0 8px rgba(black, 0.25);
+    }
 }
 aside.data h2::after {
     display: inline-block;
@@ -102,6 +123,10 @@ aside.data h2::after {
     color: $grey3;
     font-size: 10px;
     font-weight: 400;
+}
+aside.data .group.speed h2::after,
+aside.data .group.pace h2::after {
+    content: '(Average)';
 }
 aside.data h3 {
     margin-bottom: 6px;
@@ -111,46 +136,52 @@ aside.data h3 {
 /* -------------------------------------------------------------------- GROUP --- */
 aside.data .group {
     display: flex;
+    align-content: flex-start;
+    flex: 0 0 auto;
     flex-wrap: wrap;
-    @media (min-width: ($break1 + 1px)) {
+    @media (max-width: $break2) and (min-width: ($break1 + 1px)), (max-width: $break1) {
+        scroll-snap-align: start;
+    }
+    @media (min-width: ($break2 + 1px)) {
         padding: 0 24px;
         margin: 24px 0;
-        align-content: flex-start;
         flex: 1;
     }
-    @media (max-width: $break1) {
-        scroll-snap-align: start;
-        flex: 0 0 auto;
-    }
-    @media (max-width: $break1) and (min-width: ($break0 + 1px)) {
-        width: 224px;
+    @media (max-width: $break2) and (min-width: ($break1 + 1px)) {
+        width: 218px;
         padding: 0 16px;
         margin: 16px 0;
     }
-    @media (max-width: $break0) {
-        padding: 16px 0;
+    @media (max-width: $break1) {
+        padding: 4px 0 16px;
         margin: 0 16px;
     }
 }
 aside.data .group:not(:last-child) {
-    @media (min-width: ($break0 + 1px)) {
+    @media (min-width: ($break1 + 1px)) {
         border-right: 1px solid $grey0;
     }
-    @media (max-width: $break0) {
+    @media (max-width: $break1) {
         border-bottom: 1px solid $grey0;
     }
-}
-aside.data .group.speed h2::after,
-aside.data .group.pace h2::after {
-    content: '(Average)';
 }
 
 /* --------------------------------------------------------------------- ITEM --- */
 aside.data .group .item {
-    width: 50%;
+    @media (min-width: ($break1 + 1px)) {
+        width: 50%;
+    }
+    @media (max-width: $break1) and (min-width: ($break0 + 1px)) {
+        width: 25%;
+    }
+    @media (max-width: $break0) {
+        width: 50%;
+    }
 }
 aside.data .group .item:not(:nth-of-type(-n+2)) {
-    margin-top: 10px;
+    @media (min-width: ($break1 + 1px)), (max-width: $break0) {
+        margin-top: 10px;
+    }
 }
 
 /* -------------------------------------------------------------------- VALUE --- */

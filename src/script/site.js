@@ -20,6 +20,9 @@ function init() {
 		// detail
 		detail_init();
 
+		// data
+		data_init();
+
 		// control
 		control_init();
 	})();
@@ -505,8 +508,15 @@ function track_draw() {
 
 /* ------------------------------------------------------------------- ACTIVE --- */
 function track_active(track, feature) {
+	var $detail;
 	var coordinate,
 		bound;
+
+	// cache elment
+	$detail = $('aside.detail[data-track-id='+ track.id +']');
+
+	// reset scroll
+	$detail.find('.scroll').scrollTop(0);
 
 	// add track active state
 	TRACK.state.active = feature;
@@ -528,7 +538,7 @@ function track_active(track, feature) {
 	// listen for moveend
 	MAP.ctx.once('moveend', function() {
 		// add display class
-		$('aside.detail[data-track-id='+ track.id +']').addClass('display');
+		$detail.addClass('display');
 	});
 }
 
@@ -775,6 +785,12 @@ function track_feature_remove(feature, state) {
 
 /* ----------------------------------------------------------- DETAIL : RESET --- */
 function track_detail_reset() {
+	// determine whether hover state should be removed
+	if (typeof TRACK.state.hover !== 'undefined') {
+		// remove feature state
+		track_feature_remove(TRACK.state.hover, 'hover');
+	}
+
 	// determine whether active state should be removed
 	if (typeof TRACK.state.active !== 'undefined') {
 		// remove feature state
@@ -841,6 +857,56 @@ function detail_sticky() {
 
 			// toggle stuck attribute
 			if ((offset - height) === 0) $h2.attr('stuck', '');
+			else $h2.removeAttr('stuck');
+		});
+	});
+}
+
+
+/* ////////////////////////////////////////////////////////////////////////////// */
+/* ///////////////////////////////////////////////////////////////////// DATA /// */
+/* ////////////////////////////////////////////////////////////////////////////// */
+
+/* --------------------------------------------------------------------- INIT --- */
+function data_init() {
+	// sticky
+	data_sticky();
+}
+
+/* ------------------------------------------------------------------- STICKY --- */
+function data_sticky() {
+	// listen for scroll
+	$('aside.data').find('.scroll').on('scroll', function() {
+		var $data;
+		var scroll;
+
+		// cache element
+		$data = $(this).closest('aside.data');
+
+		// store scroll
+		scroll = $data.find('.scroll').scrollTop();
+
+		// bail when scroll at top
+		if (scroll === 0) {
+			// remove stuck attribute
+			$data.find('h2').removeAttr('stuck');
+			
+			return;
+		}
+
+		// loop though heading
+		$data.find('h2').each(function() {
+			var $h2;
+			var offset;
+
+			// cache element
+			$h2 = $(this);
+
+			// store heading offset
+			offset = $h2.position().top;
+
+			// toggle stuck attribute
+			if (offset === 0) $h2.attr('stuck', '');
 			else $h2.removeAttr('stuck');
 		});
 	});
