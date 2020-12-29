@@ -4,26 +4,40 @@
 
 /* ------------------------------------------------------------------- DETAIL --- */
 aside.detail {
-    @media (min-width: ($break1 + 1px)) {
+    left: 0;
+    z-index: 4;
+    display: flex;
+    flex-flow: column;
+    transition: transform 160ms;
+    will-change: transform;
+    pointer-events: none;
+    @media (min-width: ($break0 + 1px)) {
         top: 0;
-        left: 0;
-        display: flex;
         width: 320px;
+    }
+    @media (min-width: ($break1 + 1px)) {
         height: calc((100% - 222px));
         margin: 24px;
-        flex-flow: column;
         transform: translateX(calc(((100% + 24px) * -1)));
-        transition: transform 160ms;
-        will-change: transform;
-        pointer-events: none;
     }
-    @media (max-width: $break1) {
-        display: none;
+    @media (max-width: $break1) and (min-width: ($break0 + 1px)) {
+        height: calc((100% - 182px));
+        margin: 16px;
+        transform: translateX(calc(((100% + 16px) * -1)));
+    }
+    @media (max-width: $break0) {
+        bottom: 0;
+        width: 100%;
+        height: 50%;
+        transform: translateY(100%);
     }
 }
 aside.detail.display {
-    @media (min-width: ($break1 + 1px)) {
+    @media (min-width: ($break0 + 1px)) {
         transform: translateX(0);
+    }
+    @media (max-width: $break0) {
+        transform: translateY(0);
     }
 }
 
@@ -33,8 +47,10 @@ aside.detail > div {
     max-height: 100%;
     overflow: hidden;
     background-color: white;
-    border-radius: 4px;
     pointer-events: all;
+    @media (min-width: ($break0 + 1px)) {
+        border-radius: 4px;
+    }
 }
 aside.detail.display > div {
     box-shadow: 0 0 24px rgba($grey9, 0.125);
@@ -48,7 +64,7 @@ aside.detail > div::after {
     width: 100%;
     height: 24px;
     content: '';
-    background-image: linear-gradient(rgba(white, 0), rgba(white, 1) 75%, rgba(white, 1) 100%);
+    background-image: linear-gradient(180deg, rgba(white, 0), rgba(white, 1) 75%, rgba(white, 1) 100%);
     border-radius: 0 0 4px 4px;
 }
 
@@ -67,10 +83,11 @@ aside.detail .meta {
     top: 0;
     z-index: 2;
     display: flex;
+    width: 100%;
     padding: 24px 24px 12px;
     flex-wrap: wrap;
-    border-radius: 4px 4px 0 0;
     background-color: white;
+    border-radius: 4px 4px 0 0;
 }
 aside.detail .meta h1 {
     margin-bottom: 8px;

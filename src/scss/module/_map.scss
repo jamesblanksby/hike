@@ -4,23 +4,35 @@
 
 /* ------------------------------------------------------------------ SECTION --- */
 section.map {
+    position: absolute;
+    top: 0;
+    left: 0;
     z-index: 1;
+    width: 100%;
     background-color: $snow6;
-    @include position-fill(absolute);
+    @media (min-width: ($break0 + 1px)) {
+        height: 100%;
+    }
+    @media (max-width: $break0) {
+        height: 50%;
+    }
     @media (min-width: ($break1 + 1px)) {
         padding: 24px 24px 198px;
     }
     @media (max-width: $break1) and (min-width: ($break0 + 1px)) {
-        padding: 24px 24px 24px 288px;
+        padding: 16px 16px 166px;
     }
     @media (max-width: $break0) {
-        padding: 16px 16px 166px;
+        padding: 16px;
     }
 }
 
 html.detail_active section.map {
     @media (min-width: ($break1 + 1px)) {
         padding-left: 368px;
+    }
+    @media (max-width: $break1) and (min-width: ($break0 + 1px)) {
+        padding-left: 352px;
     }
 }
 

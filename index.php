@@ -37,7 +37,7 @@ $award_time = array_slice($tmp_array, 0, 3);
 
     <!-- detail -->
     <?php if (!empty($track_array)) : ?>
-        <?php foreach ($track_array as $index => $track) : ?>
+        <?php foreach ($track_array as $track) : ?>
             <aside class="detail" data-track-id="<?= $track->id; ?>">
                 <div>
                     <div class="scroll">
