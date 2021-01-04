@@ -1,7 +1,5 @@
 <?php
 
-exit;
-
 foreach (glob(__DIR__ . '/../lib/track/*.gpx') as $file) {
     $name = basename($file, '.gpx');
 
@@ -35,8 +33,6 @@ function track_parse($file) {
     $track->name = (string) $track->name;
 
     // trkpt
-    $trkpt_index = 0;
-    $trkpt_count = count($data->trk->trkseg->trkpt);
     foreach ($data->trk->trkseg->trkpt as $trkpt) {
         // point
         $point = (object) ['time' => 0, 'elevation' => 0, 'coordinate' => [],];
@@ -48,33 +44,43 @@ function track_parse($file) {
         // coordinate
         $point->coordinate = array_map('floatval', [$trkpt->attributes()->lon, $trkpt->attributes()->lat,]);
 
-        // moving
-        $moving = ($point->time - $prev_point->time) < 15 && $distance > 0.25;
-
-        // elevation
+        // distance
         if (!empty($prev_point)) {
-            $elevation = ($point->elevation - $prev_point->elevation);
+            $distance = _dist3d($prev_point, $point);
         }
-        // elevation min
-        if ($point->elevation < $track->elevation->min) {
-            $track->elevation->min = $point->elevation;
+        // moving
+        if (!empty($prev_point)) {
+            $moving = ($point->time - $prev_point->time) < 15 && $distance > 0.25;
         }
-        // elevation max
-        if ($point->elevation > $track->elevation->max) {
-            $track->elevation->max = $point->elevation;
-        }
-        // elevation gain
-        if (!empty($prev_point) && $moving && $elevation > 0) {
-            $track->elevation->gain += $elevation;
-        }
-        // elevation loss
-        if (!empty($prev_point) && $moving && $elevation < 0) {
-            $track->elevation->loss += $elevation;
+
+        // elevation validate
+        if (empty($prev_elevation) || abs(($point->elevation - $prev_elevation)) > 10 && $moving) {
+            // elevation diff
+            if (!empty($prev_point)) {
+                $elevation_diff = ($point->elevation - $prev_elevation);
+            }
+            // elevation gain
+            if (!empty($prev_point) && $elevation_diff > 0) {
+                $track->elevation->gain += $elevation_diff;
+            }
+            // elevation loss
+            if (!empty($prev_point) && $elevation_diff < 0) {
+                $track->elevation->loss += $elevation_diff;
+            }
+            // elevation min
+            if ($point->elevation < $track->elevation->min) {
+                $track->elevation->min = $point->elevation;
+            }
+            // elevation max
+            if ($point->elevation > $track->elevation->max) {
+                $track->elevation->max = $point->elevation;
+            }
+            $prev_elevation = $point->elevation;
         }
 
         // point action
         $action = 'flat';
-        if (!empty($prev_point) && abs($elevation) > 0.25) {
+        if (!empty($prev_point) && abs($elevation_diff) > 0.25) {
             if ($point->elevation > $prev_point->elevation) {
                 $action = 'climb';
             } elseif ($point->elevation < $prev_point->elevation) {
@@ -82,10 +88,6 @@ function track_parse($file) {
             }
         }
 
-        // distance
-        if (!empty($prev_point)) {
-            $distance = _dist3d($prev_point, $point);
-        }
         // distance climb
         if ($action === 'climb') {
             $track->distance->climb += $distance;
@@ -174,9 +176,6 @@ function track_parse($file) {
         // store
         $prev_point = $point;
         $track->point []= $point;
-
-        // index
-        $trkpt_index++;
     }
     
     // speed
