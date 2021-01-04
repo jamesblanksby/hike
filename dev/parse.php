@@ -131,7 +131,9 @@ function track_parse($file) {
         }
         
         // speed
-        $speed = (($distance / 1000) / ($time / 3600));
+        if (!empty($prev_point)) {
+            $speed = @(($distance / 1000) / ($time / 3600));
+        }
         // speed max
         if ($speed > $track->speed->max) {
             $track->speed->max = $speed;
