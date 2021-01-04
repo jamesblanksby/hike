@@ -48,6 +48,9 @@ function track_parse($file) {
         // coordinate
         $point->coordinate = array_map('floatval', [$trkpt->attributes()->lon, $trkpt->attributes()->lat,]);
 
+        // moving
+        $moving = ($point->time - $prev_point->time) < 15 && $distance > 0.25;
+
         // elevation
         if (!empty($prev_point)) {
             $elevation = ($point->elevation - $prev_point->elevation);
@@ -61,11 +64,11 @@ function track_parse($file) {
             $track->elevation->max = $point->elevation;
         }
         // elevation gain
-        if (!empty($prev_point) && $elevation > 0) {
+        if (!empty($prev_point) && $moving && $elevation > 0) {
             $track->elevation->gain += $elevation;
         }
         // elevation loss
-        if (!empty($prev_point) && $elevation < 0) {
+        if (!empty($prev_point) && $moving && $elevation < 0) {
             $track->elevation->loss += $elevation;
         }
 
@@ -100,7 +103,6 @@ function track_parse($file) {
 
         // time
         $time = ($point->time - $prev_point->time);
-        $moving = $time < 15 && $distance > 0.25;
         // time start
         if (empty($track->time->start)) {
             $track->time->start = $point->time;
