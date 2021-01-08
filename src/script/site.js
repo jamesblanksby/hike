@@ -317,8 +317,8 @@ function track_listen() {
 		// track
 		track = JSON.parse(feature.properties.track);
 
-		// active
-		track_active(track, feature);
+		// active detail
+		track_detail_active(track, feature);
 
 		// update url
 		history.replaceState({}, {}, [ROOT_URL, ['track', track.id,].join('/'),].join('/'));
@@ -358,8 +358,8 @@ function track_prepare() {
 				return feature.properties.id === active.id;
 			})[0];
 
-			// track
-			track_active(active, feature);
+			// active detail
+			track_detail_active(active, feature);
 		}
 		// center
 		else track_center();
@@ -503,42 +503,6 @@ function track_draw() {
 
 		// resolve
 		resolve();
-	});
-}
-
-/* ------------------------------------------------------------------- ACTIVE --- */
-function track_active(track, feature) {
-	var $detail;
-	var coordinate,
-		bound;
-
-	// cache elment
-	$detail = $('aside.detail[data-track-id='+ track.id +']');
-
-	// reset scroll
-	$detail.find('.scroll').scrollTop(0);
-
-	// add track active state
-	TRACK.state.active = feature;
-	track_feature_active(track, feature);
-
-	// store track point coordinate
-	coordinate = track_coordinate(track);
-	// reduce coordinates to bound
-	bound = map_coordinate_bound(coordinate);
-
-	// add active class
-	$('html').addClass('detail_active');
-	// remove display class
-	$('aside.detail').removeClass('display');
-
-	// bound
-	map_bound(bound);
-
-	// listen for moveend
-	MAP.ctx.once('moveend', function() {
-		// add display class
-		$detail.addClass('display');
 	});
 }
 
@@ -783,6 +747,45 @@ function track_feature_remove(feature, state) {
 	TRACK.state[state] = undefined;
 }
 
+/* ---------------------------------------------------------- DETAIL : ACTIVE --- */
+function track_detail_active(track, feature) {
+	var $detail;
+	var coordinate,
+		bound;
+
+	// cache elment
+	$detail = $('aside.detail[data-track-id='+ track.id +']');
+
+	// reset scroll
+	$detail.find('.scroll').scrollTop(0);
+
+	// add track active state
+	TRACK.state.active = feature;
+	track_feature_active(track, feature);
+
+	// update paint property
+	MAP.ctx.setPaintProperty('track-default', 'line-opacity', 0.25);
+
+	// add active class
+	$('html').addClass('detail_active');
+	// remove display class
+	$('aside.detail').removeClass('display');
+
+	// store track point coordinate
+	coordinate = track_coordinate(track);
+	// reduce coordinates to bound
+	bound = map_coordinate_bound(coordinate);
+
+	// bound
+	map_bound(bound);
+
+	// listen for moveend
+	MAP.ctx.once('moveend', function() {
+		// add display class
+		$detail.addClass('display');
+	});
+}
+
 /* ----------------------------------------------------------- DETAIL : RESET --- */
 function track_detail_reset() {
 	// determine whether hover state should be removed
@@ -796,6 +799,9 @@ function track_detail_reset() {
 		// remove feature state
 		track_feature_remove(TRACK.state.active, 'active');
 	}
+
+	// reset paint property
+	MAP.ctx.setPaintProperty('track-default', 'line-opacity', 1);
 
 	// remove active class
 	$('html').removeClass('detail_active');
