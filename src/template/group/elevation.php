@@ -2,7 +2,7 @@
     <h2>Elevation</h2>
     <div class="item elevation">
         <h3>Min</h3>
-        <?php $value = min(array_diff(array_map(function($track) { return $track->elevation->min; }, $track_array), [null,])); ?>
+        <?php $value = min(array_map(function($track) { return $track->elevation->min; }, $track_array)); ?>
         <div class="value"><?= number_format($value, 1); ?></div>
     </div>
     <div class="item elevation">
