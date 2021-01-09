@@ -6,7 +6,7 @@ foreach (array_reverse(glob(__DIR__ . '/../lib/track/*.gpx')) as $file) {
     $file_gpx = __DIR__ . '/../lib/track/' . $name . '.' . 'gpx';
     $file_json = __DIR__ . '/../tmp/track/' . $name . '.' . 'json';
 
-    if (file_exists($file_json)) continue;
+    // if (file_exists($file_json)) continue;
 
     $track = track_parse($file_gpx);
     file_put_contents($file_json, json_encode($track, JSON_PARTIAL_OUTPUT_ON_ERROR));
@@ -19,7 +19,7 @@ function track_parse($file) {
 
     // track
     $track = (object) [
-        'id' => guid(),
+        'id' => md5(basename($file)),
         'name' => null,
         'time' => (object) ['start' => 0, 'end' => 0, 'flat' => 0, 'climb' => 0, 'descent' => 0, 'moving' => 0, 'total' => 0,],
         'distance' => (object) ['flat' => 0, 'climb' => 0, 'descent' => 0, 'total' => 0,],
@@ -132,6 +132,26 @@ function track_parse($file) {
         $track->point[$i] = $point;
     }
 
+    // elevation smooth
+    $smooth_elevation = true;
+    for ($i = 0; $i < count($track->point); $i++) {
+        // point
+        $point = $track->point[$i];
+
+        // first
+        if ($i === 0) {
+            $prev_point = $point;
+            continue;
+        }
+
+        // elevation delta
+        $delta_elevation = ($point->elevation - $prev_point->elevation);
+
+        // elevation gain
+        $diff_elevation = $delta_elevation > $diff_elevation ? $delta_elevation : $diff_elevation;
+    }
+    if ($diff_elevation <= 10) $smooth_elevation = false;
+
     // elevation
     for ($i = 0; $i < count($track->point); $i++) {
         // point
@@ -151,11 +171,11 @@ function track_parse($file) {
         // elevation delta
         $delta_elevation = ($point->elevation - $prev_point->elevation);
         // elevation smooth
-        if (abs($delta_elevation) > 10) {
+        if (abs($delta_elevation) > 10 || !$smooth_elevation) {
             // elevation gain
-            $track->elevation->gain += ($delta_elevation > 0) ? $delta_elevation : 0;
+            $track->elevation->gain += $delta_elevation > 0 ? $delta_elevation : 0;
             // elevation gain
-            $track->elevation->loss += ($delta_elevation < 0) ? abs($delta_elevation) : 0;
+            $track->elevation->loss += $delta_elevation < 0 ? abs($delta_elevation) : 0;
             // elevation min
             if ($point->elevation > 0 && $point->elevation < $track->elevation->min) $track->elevation->min = $point->elevation;
             // elevation max
@@ -234,21 +254,6 @@ function track_parse($file) {
     return $track;
 }
 
-
-function guid() {
-    return strtolower(
-        sprintf('%04X%04X-%04X-%04X-%04X-%04X%04X%04X',
-            mt_rand(0, 65535),
-            mt_rand(0, 65535),
-            mt_rand(0, 65535),
-            mt_rand(16384, 20479),
-            mt_rand(32768, 49151),
-            mt_rand(0, 65535),
-            mt_rand(0, 65535),
-            mt_rand(0, 65535)
-        )
-    );
-}
 
 function dist3d($a, $b) {
     $planar = dist2d($a, $b);
