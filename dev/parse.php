@@ -49,7 +49,7 @@ function track_parse($file) {
         // moving
         if (!empty($prev_point)) $point->moving = ($point->time - $prev_point->time) < 5 && $point->distance > 0.25;
         // action
-        if (!empty($prev_point) && abs(($point->elevation - $prev_point->elevation)) > 0.5) {
+        if (!empty($prev_point) && abs(($point->elevation - $prev_point->elevation)) > 0.25) {
             if ($point->elevation > $prev_point->elevation) $point->action = 'climb';
             elseif ($point->elevation < $prev_point->elevation) $point->action = 'descent';
         }
