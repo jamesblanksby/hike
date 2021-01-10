@@ -6,12 +6,14 @@ $class []= 'browser_load';
 <html class="<?= implode(' ', $class); ?>" lang="en">
 <head>
 <head>
+    <!-- share -->
+    <?php include ROOT_DIR . path('src', 'template', 'share.php'); ?>
     <!-- encoding -->
     <meta charset="utf-8">
     <!-- viewport -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- title -->
-    <title>Hike — Blanksby</title>
+	<title><?= $_PAGE['title']; ?></title>
     <!-- favicon -->
     <link href="<?= ROOT_URL . path('src', 'gfx', 'favicon.svg'); ?>" rel="icon">
     <!-- style : site -->
@@ -24,6 +26,20 @@ $class []= 'browser_load';
     <script defer src="<?= ROOT_URL . path('src', 'script', 'var.js'); ?>"></script>
     <!-- script : site -->
     <script defer src="<?= ROOT_URL . path('src', 'script', 'site.js'); ?>"></script>
+    <!-- og -->
+	<meta property="og:url" content="<?= $_PAGE['url']; ?>">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="<?= $_PAGE['title']; ?>">
+    <meta property="og:image" content="<?= $_PAGE['image']; ?>">
+    <meta property="og:description" content="<?= $_PAGE['description']; ?>">
+    <meta property="og:site_name" content="<?= $_PAGE['site']; ?>">
+	<meta property="og:locale" content="en_GB">
+	<!-- twitter -->
+	<meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="<?= $_PAGE['url']; ?>">
+    <meta name="twitter:title" content="<?= $_PAGE['title']; ?>">
+    <meta name="twitter:description" content="<?= $_PAGE['description']; ?>">
+    <meta name="twitter:image" content="<?= $_PAGE['image']; ?>">
 </head>
 <body>
 

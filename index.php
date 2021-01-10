@@ -4,9 +4,10 @@
 <?php
 $file_array = array_map('basename', glob(ROOT_DIR . path(DIR_TMP, 'track', implode('.', ['*', 'json',]))));
 $track_array = [];
-foreach ($file_array as $file) {
-    $track_array []= json_decode(file_get_contents(ROOT_DIR . path(DIR_TMP, 'track', $file)));
-}
+foreach ($file_array as $file) $track_array []= json_decode(file_get_contents(ROOT_DIR . path(DIR_TMP, 'track', $file)));
+
+$track_id = array_pop(explode('/', $_SERVER['REQUEST_URI']));
+$track_active = array_values(array_filter($track_array, function($track) use ($track_id) { if ($track_id === $track->id) return $track; }))[0];
 
 $tmp_array = $track_array;
 usort($tmp_array, function($a, $b) { return ($b->distance->total - $a->distance->total); });
