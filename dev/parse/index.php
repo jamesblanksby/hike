@@ -1,15 +1,23 @@
 <?php
 
-foreach (array_reverse(glob(__DIR__ . '/../lib/track/*.gpx')) as $file) {
+include __DIR__ . '/rdp.php';
+
+$root = __DIR__ . '/../..';
+
+foreach (array_reverse(glob($root . '/lib/track/*.gpx')) as $file) {
     $name = basename($file, '.' . 'gpx');
 
-    $file_gpx = __DIR__ . '/../lib/track/' . $name . '.' . 'gpx';
-    $file_json = __DIR__ . '/../tmp/track/' . $name . '.' . 'json';
+    $file_gpx = $root . '/lib/track/' . $name . '.' . 'gpx';
+    $file_json = $root . '/tmp/track/' . $name . '.' . 'json';
+    $file_image = $root . '/lib/track/' . $name . '.' . 'png';
 
-    if (file_exists($file_json)) continue;
+    // if (file_exists($file_json)) continue;
 
-    $track = track_parse($file_gpx);
-    file_put_contents($file_json, json_encode($track, JSON_PARTIAL_OUTPUT_ON_ERROR));
+    $parse = track_parse($file_gpx);
+    file_put_contents($file_json, json_encode($parse, JSON_PARTIAL_OUTPUT_ON_ERROR));
+
+    $image = track_image($parse);
+    file_put_contents($file_image, $image);
 }
 
 
@@ -20,6 +28,7 @@ function track_parse($file) {
     // track
     $track = (object) [
         'id' => md5(basename($data->trk->trkseg->trkpt[0]->time)),
+        'file' => basename($file, '.' . 'gpx'),
         'name' => null,
         'time' => (object) ['start' => 0, 'end' => 0, 'flat' => 0, 'climb' => 0, 'descent' => 0, 'moving' => 0, 'total' => 0,],
         'distance' => (object) ['flat' => 0, 'climb' => 0, 'descent' => 0, 'total' => 0,],
@@ -287,6 +296,73 @@ function track_parse($file) {
     }
 
     return $track;
+}
+
+function track_image($track) {
+    // token
+    $token = 'pk.eyJ1IjoiamFtZXNibGFua3NieSIsImEiOiJjazBiM2E1dzkwbzVxM2dud3lvZXNocW9uIn0.hTartIj-fT9-6f7yOAuLIg';
+    
+    // dimension
+    $width = 600;
+    $height = 315;
+
+    // coordinate
+    $coordinate = array_map(function($point) { return $point->coordinate; }, $track->point);
+
+    // simplify
+    $tolerance = 0.0000001;
+    while (count($coordinate) > 250) {
+        $coordinate = simplify($coordinate, $tolerance, true);
+        $tolerance *= 10;
+    }
+
+    // overlay
+    $overlay = (object) [
+        'type' => 'FeatureCollection',
+        'features' => [
+            (object) [
+                'type' => 'Feature',
+                'properties' => (object) [
+                    'stroke' => '#dd1c77',
+                    'stroke-width' => 4,
+                    'stroke-opacity' => 1,
+                ],
+                'geometry' => (object) [
+                    'type' => 'LineString',
+                    'coordinates' => $coordinate,
+                ],
+            ],
+        ],
+    ];
+
+    // format
+    $lon_array = [];
+    $lat_array = [];
+    for ($i = 0; $i < count($coordinate); $i++) {
+        $lon_array []= $coordinate[$i][0];
+        $lat_array []= $coordinate[$i][1];
+    }
+
+    // min / max
+    $lon_min = min($lon_array);
+    $lat_min = min($lat_array);
+    $lon_max = max($lon_array);
+    $lat_max = max($lat_array);
+
+    // bound
+    $bound = [[$lon_min, $lat_min,], [$lon_max, $lat_max,],];
+
+    // url
+    $url = 'https://api.mapbox.com/styles/v1';
+    $url .= '/jamesblanksby/ckht3exwv29rd1anysnr4h59a';
+    $url .= '/static';
+    $url .= '/geojson(' . urlencode(json_encode($overlay)) . ')';
+    $url .= '/auto';
+    $url .= '/' . implode('x', [$width, $height,]);
+    $url .= '@2x';
+    $url .= '?access_token=' . $token . '&logo=false' . '&attribution=false' . '&before_layer=waterway-label';
+
+    return file_get_contents($url);
 }
 
 
