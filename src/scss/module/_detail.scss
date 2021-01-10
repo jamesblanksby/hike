@@ -96,8 +96,11 @@ aside.detail .meta {
 }
 aside.detail .meta h1 {
     margin-bottom: 8px;
+    overflow: hidden;
     flex-basis: 100%;
     color: $grey9;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 aside.detail .meta time.date {
     margin-right: 0.25em;
