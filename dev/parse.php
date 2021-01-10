@@ -47,17 +47,52 @@ function track_parse($file) {
         // distance
         if (!empty($prev_point)) $point->distance = dist3d($point, $prev_point);
         // moving
-        if (!empty($prev_point)) $point->moving = ($point->time - $prev_point->time) < 5 && $point->distance > 0.25;
-        // action
-        if (!empty($prev_point) && abs(($point->elevation - $prev_point->elevation)) > 0.25) {
-            if ($point->elevation > $prev_point->elevation) $point->action = 'climb';
-            elseif ($point->elevation < $prev_point->elevation) $point->action = 'descent';
-        }
+        $delta_moving = ($point->time - $prev_point->time);
+        if (!empty($prev_point)) $point->moving = $delta_moving < 5 && $point->distance > 0.25 || $delta_moving < 35;
 
         // prev
         $prev_point = $point;
         // store
         $track->point []= $point;
+    }
+
+    // elevation smooth
+    $elevation_array = [];
+    for ($i = 0; $i < count($track->point); $i++) {
+        // point
+        $point = $track->point[$i];
+
+        // elevation
+        $prev_elevation = $track->point[($i - 1)];
+        $elevation = $point->elevation;
+        $next_elevation = $track->point[($i + 1)];
+
+        // elevation smooth
+        if (!empty($prev_elevation) && !empty($next_elevation)) {
+            $elevation = (($prev_elevation * 0.3) + ($elevation * 0.4) + ($next_elevation * 0.3));
+        }
+
+        // store
+        $elevation_array []= $elevation;
+    }
+
+    // action
+    for ($i = 0; $i < count($track->point); $i++) {
+        // point
+        $point = $track->point[$i];
+
+        // elevation
+        $prev_elevation = $elevation_array[($i - 1)];
+        $elevation = $elevation_array[$i];
+
+        // action
+        if (!empty($prev_elevation) && abs(($elevation - $prev_elevation)) > 0.125 && $point->moving) {
+            if ($elevation_array[$i] > $elevation_array[($i - 1)]) $point->action = 'climb';
+            elseif ($elevation_array[$i] < $elevation_array[($i - 1)]) $point->action = 'descent';
+        }
+
+        // store
+        $track->point[$i] = $point;
     }
 
     // time
