@@ -764,7 +764,7 @@ function track_detail_active(track, feature) {
 	track_feature_active(track, feature);
 
 	// update paint property
-	MAP.ctx.setPaintProperty('track-default', 'line-opacity', 0.25);
+	MAP.ctx.setPaintProperty('track-default', 'line-opacity', 0.5);
 
 	// add active class
 	$('html').addClass('detail_active');
