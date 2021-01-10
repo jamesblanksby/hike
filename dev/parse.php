@@ -19,7 +19,7 @@ function track_parse($file) {
 
     // track
     $track = (object) [
-        'id' => md5(basename($file)),
+        'id' => md5(basename($data->trk->trkseg->trkpt[0]->time)),
         'name' => null,
         'time' => (object) ['start' => 0, 'end' => 0, 'flat' => 0, 'climb' => 0, 'descent' => 0, 'moving' => 0, 'total' => 0,],
         'distance' => (object) ['flat' => 0, 'climb' => 0, 'descent' => 0, 'total' => 0,],
