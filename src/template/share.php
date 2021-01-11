@@ -20,7 +20,7 @@ $_PAGE['title'] = implode(' &mdash; ', $title);
 // description
 if (!empty($track_active)) {
     $distance = implode(': ', ['Distance', implode('', [round(($track_active->distance->total / 1000), 2), 'KM',]),]);
-    $elevation = implode(': ', ['Elevation Gain', implode('', [round($track_active->elevation->gain, 2), 'M',]),]);
+    $elevation = implode(': ', ['Elevation Gain', implode('', [number_format($track_active->elevation->gain, 1), 'M',]),]);
     $moving = implode(': ', ['Moving Time', gmdate('H:i:s', $track_active->time->moving),]);
     $_PAGE['description'] = implode(' / ', [$distance, $elevation, $moving,]);
 }
