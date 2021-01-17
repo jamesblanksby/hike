@@ -15,7 +15,11 @@ $class []= 'browser_load';
     <!-- title -->
 	<title><?= $_PAGE['title']; ?></title>
     <!-- favicon -->
-    <link href="<?= ROOT_URL . path('src', 'gfx', 'favicon.svg'); ?>" rel="icon">
+    <link href="<?= ROOT_URL . path('src', 'gfx', 'favicon.png'); ?>" rel="icon">
+    <?php foreach ([16, 32, 96,] as $size) : ?>
+        <?php $href = ROOT_URL . path('src', 'gfx', 'favicon', implode('.', [$size, 'png',])); ?>
+        <link href="<?= $href; ?>" sizes="<?= implode('x', [$size, $size,]); ?>" rel="icon">
+    <?php endforeach; ?>
     <!-- style : site -->
 	<link href="<?= ROOT_URL . '/src/css/site.css'; ?>" rel="stylesheet">
     <!-- plugin : jquery -->
