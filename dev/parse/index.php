@@ -11,7 +11,7 @@ foreach (array_reverse(glob($root . '/lib/track/*.gpx')) as $file) {
     $file_json = $root . '/tmp/track/' . $name . '.' . 'json';
     $file_image = $root . '/lib/track/' . $name . '.' . 'png';
 
-    // if (file_exists($file_json)) continue;
+    if (file_exists($file_json)) continue;
 
     $parse = track_parse($file_gpx);
     file_put_contents($file_json, json_encode($parse, JSON_PARTIAL_OUTPUT_ON_ERROR));
