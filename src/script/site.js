@@ -301,9 +301,6 @@ function track_listen() {
 
 		// active detail
 		track_detail_active(track, feature);
-
-		// update url
-		history.replaceState({}, {}, [ROOT_URL, ['track', track.id,].join('/'),].join('/'));
 	});
 }
 
@@ -733,7 +730,8 @@ function track_feature_remove(feature, state) {
 function track_detail_active(track, feature) {
 	var $detail;
 	var coordinate,
-		bound;
+		bound,
+		title;
 
 	// cache elment
 	$detail = $('aside.detail[data-track-id='+ track.id +']');
@@ -766,10 +764,20 @@ function track_detail_active(track, feature) {
 		// add display class
 		$detail.addClass('display');
 	});
+
+	// store default title text
+	title = $('title').attr('data-title');
+	// update title
+	$('title').text([title, track.name,].join(' — '));
+
+	// update url
+	history.replaceState({}, {}, [ROOT_URL, ['track', track.id,].join('/'),].join('/'));
 }
 
 /* ----------------------------------------------------------- DETAIL : RESET --- */
 function track_detail_reset() {
+	var title;
+
 	// determine whether hover state should be removed
 	if (typeof TRACK.state.hover !== 'undefined') {
 		// remove feature state
@@ -789,6 +797,11 @@ function track_detail_reset() {
 	$('html').removeClass('detail_active');
 	// remove display class
 	$('aside.detail').removeClass('display');
+
+	// store default title text
+	title = $('title').attr('data-title');
+	// reset title
+	$('title').text(title);
 
 	// purge url
 	history.replaceState({}, {}, ROOT_URL);

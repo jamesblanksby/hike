@@ -13,7 +13,7 @@ $class []= 'browser_load';
     <!-- viewport -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- title -->
-	<title><?= $_PAGE['title']; ?></title>
+	<title data-title="<?= $default_title; ?>"><?= $_PAGE['title']; ?></title>
     <!-- favicon -->
     <link href="<?= ROOT_URL . path('src', 'gfx', 'favicon.png'); ?>" rel="icon">
     <?php foreach ([16, 32, 96,] as $size) : ?>
