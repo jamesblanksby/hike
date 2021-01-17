@@ -223,11 +223,11 @@ function map_feature_query(source, point) {
 
 /* --------------------------------------------------------------------- INIT --- */
 function track_init() {
-	// prepare
-	track_prepare();
-
 	// listen
 	track_listen();
+
+	// prepare
+	track_prepare();
 }
 
 /* ------------------------------------------------------------------- LISTEN --- */
@@ -363,115 +363,6 @@ function track_request(file) {
 		// resolve
 		resolve(track);
 	});
-}
-
-/* ------------------------------------------------------------------- SOURCE --- */
-function track_source() {
-	var source;
-
-	// destroy track source
-	if (MAP.ctx.getSource('track')) MAP.ctx.removeSource('track');
-
-	// build track data source
-	source = { type: 'geojson', data: { type: 'FeatureCollection', features: [], }, generateId: true, };
-
-	// loop through data tracks
-	for (var i = 0; i < TRACK.item.length; i++) {
-		var coordinate,
-			feature,
-			track,
-			color;
-
-		// store current track
-		track = TRACK.item[i];
-
-		// store track point coordinates
-		coordinate = track_coordinate(track);
-
-		// determine track color depending on distance
-		color = track_color(track);
-
-		// build source feature
-		feature = {
-			type: 'Feature',
-			properties: { id: track.id, color: color, track: JSON.stringify(track), },
-			geometry: { type: 'LineString', coordinates: coordinate, },
-		};
-		// add feature to source
-		source.data.features.push(feature);
-	}
-
-	// append source to map
-	MAP.ctx.addSource('track', source);
-}
-
-/* --------------------------------------------------------------- COORDINATE --- */
-function track_coordinate(track) {
-	var coordinate;
-
-	// retrieve track point coordinates
-	coordinate = track.point.map(function(point) { return point.coordinate.map(parseFloat); });
-
-	return coordinate;
-}
-
-/* -------------------------------------------------------------------- COLOR --- */
-function track_color(track) {
-	var color;
-	
-	// determine track color depending on distance
-	if (track.distance.total <= 5000) color = 'rgba(0, 168, 255, 1)';
-	else if (track.distance.total <= 10000) color = 'rgba(76, 209, 55, 1)';
-	else if (track.distance.total <= 15000) color = 'rgba(251, 197, 49, 1)';
-	else if (track.distance.total <= 20000) color = 'rgba(232, 65, 24, 1)';
-	else color = 'rgba(47, 54, 64, 1)';
-
-	return color;
-}
-
-/* -------------------------------------------------------------------- STYLE --- */
-function track_style() {
-	// toggle style
-	if (TRACK.style === 'default') TRACK.style = 'heatmap';
-	else if (TRACK.style === 'heatmap') TRACK.style = 'default';
-
-	// draw
-	track_draw();
-
-	// center
-	track_center();
-}
-
-/* ------------------------------------------------------------------- CENTER --- */
-function track_center() {
-	var coordinate,
-		bound;
-
-	// merge track coordinate
-	coordinate = TRACK.item.flatMap(function(track) { return track_coordinate(track); })
-	// reduce coordinates to bound
-	bound = map_coordinate_bound(coordinate);
-
-	// bound
-	map_bound(bound);
-}
-
-/* -------------------------------------------------------------------- LAYER --- */
-function track_layer(id, paint) {
-	var layer;
-
-	layer = {
-		id: id,
-		type: 'line',
-		source: 'track',
-		layout: {
-			'line-cap': 'round',
-			'line-join': 'round',
-		},
-		paint: paint,
-	};
-
-	return layer;
 }
 
 /* --------------------------------------------------------------------- DRAW --- */
@@ -641,6 +532,115 @@ function track_draw_heatmap() {
 		// resolve
 		MAP.ctx.once('idle', resolve);
 	});
+}
+
+/* ------------------------------------------------------------------- SOURCE --- */
+function track_source() {
+	var source;
+
+	// destroy track source
+	if (MAP.ctx.getSource('track')) MAP.ctx.removeSource('track');
+
+	// build track data source
+	source = { type: 'geojson', data: { type: 'FeatureCollection', features: [], }, generateId: true, };
+
+	// loop through data tracks
+	for (var i = 0; i < TRACK.item.length; i++) {
+		var coordinate,
+			feature,
+			track,
+			color;
+
+		// store current track
+		track = TRACK.item[i];
+
+		// store track point coordinates
+		coordinate = track_coordinate(track);
+
+		// determine track color depending on distance
+		color = track_color(track);
+
+		// build source feature
+		feature = {
+			type: 'Feature',
+			properties: { id: track.id, color: color, track: JSON.stringify(track), },
+			geometry: { type: 'LineString', coordinates: coordinate, },
+		};
+		// add feature to source
+		source.data.features.push(feature);
+	}
+
+	// append source to map
+	MAP.ctx.addSource('track', source);
+}
+
+/* --------------------------------------------------------------- COORDINATE --- */
+function track_coordinate(track) {
+	var coordinate;
+
+	// retrieve track point coordinates
+	coordinate = track.point.map(function(point) { return point.coordinate.map(parseFloat); });
+
+	return coordinate;
+}
+
+/* -------------------------------------------------------------------- COLOR --- */
+function track_color(track) {
+	var color;
+	
+	// determine track color depending on distance
+	if (track.distance.total <= 5000) color = 'rgba(0, 168, 255, 1)';
+	else if (track.distance.total <= 10000) color = 'rgba(76, 209, 55, 1)';
+	else if (track.distance.total <= 15000) color = 'rgba(251, 197, 49, 1)';
+	else if (track.distance.total <= 20000) color = 'rgba(232, 65, 24, 1)';
+	else color = 'rgba(47, 54, 64, 1)';
+
+	return color;
+}
+
+/* -------------------------------------------------------------------- LAYER --- */
+function track_layer(id, paint) {
+	var layer;
+
+	layer = {
+		id: id,
+		type: 'line',
+		source: 'track',
+		layout: {
+			'line-cap': 'round',
+			'line-join': 'round',
+		},
+		paint: paint,
+	};
+
+	return layer;
+}
+
+/* ------------------------------------------------------------------- CENTER --- */
+function track_center() {
+	var coordinate,
+		bound;
+
+	// merge track coordinate
+	coordinate = TRACK.item.flatMap(function(track) { return track_coordinate(track); })
+	// reduce coordinates to bound
+	bound = map_coordinate_bound(coordinate);
+
+	// bound
+	map_bound(bound);
+}
+
+/* -------------------------------------------------------------------- STYLE --- */
+function track_style() {
+	// toggle style
+	if (TRACK.style === 'default') TRACK.style = 'heatmap';
+	else if (TRACK.style === 'heatmap') TRACK.style = 'default';
+
+	// draw
+	track_draw();
+
+	// center
+	track_center();
 }
 
 /* ---------------------------------------------------------- FEATURE : HOVER --- */
