@@ -7,25 +7,23 @@ $(init);
 
 /* --------------------------------------------------------------------- INIT --- */
 function init() {
-	(async function() {
-		// browser
-		browser_init();
+	// browser
+	browser_init();
 
-		// map
-		await map_init();
+	// map
+	map_init();
 
-		// track
-		track_init();
+	// track
+	track_init();
 
-		// detail
-		detail_init();
+	// detail
+	detail_init();
 
-		// data
-		data_init();
+	// data
+	data_init();
 
-		// control
-		control_init();
-	})();
+	// control
+	control_init();
 }
 
 
@@ -75,51 +73,35 @@ function browser_resize() {
 
 /* --------------------------------------------------------------------- INIT --- */
 function map_init() {
-	return new Promise(async function(resolve, reject) {
-		// render
-		await map_render();
-
-		// resolve
-		resolve();
-	});
+	// render
+	map_render();
 }
 
 /* ------------------------------------------------------------------- RENDER --- */
 function map_render() {
-	return new Promise(async function(resolve, reject) {
-		var $canvas,
-			$map;
+	var $canvas,
+		$map;
 
-		// cache elements
-		$map = $('section.map');
-		$canvas = $map.find('.canvas');
+	// cache elements
+	$map = $('section.map');
+	$canvas = $map.find('.canvas');
 
-		// set access token
-		mapboxgl.accessToken = MAPBOX.token;
+	// set access token
+	mapboxgl.accessToken = MAPBOX.token;
 
-		// initialize map
-		MAP.ctx = new mapboxgl.Map({
-			style: MAP.style.active,
-			center: [0, 0,],
-			minZoom: 1,
-			maxZoom: 18,
-			container: $canvas[0],
-			attributionControl: false,
-			preserveDrawingBuffer: true,
-		});
-
-		// set map initial boundary
-		map_bound([[5.6431, 59.5208,], [-13.7688, 49.8376,],]);
-
-		// listen for load	
-		MAP.ctx.on('load', function() {
-			// remove event listener
-			MAP.ctx.off('load');
-			
-			// resolve
-			resolve();
-		});
+	// initialize map
+	MAP.ctx = new mapboxgl.Map({
+		style: MAP.style.active,
+		center: [0, 0,],
+		minZoom: 1,
+		maxZoom: 18,
+		container: $canvas[0],
+		attributionControl: false,
+		preserveDrawingBuffer: true,
 	});
+
+	// set map initial boundary
+	map_bound([[5.6431, 59.5208,], [-13.7688, 49.8376,],]);
 }
 
 /* -------------------------------------------------------------------- BOUND --- */
