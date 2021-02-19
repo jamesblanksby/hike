@@ -66,8 +66,8 @@ aside.control .action a:not(:last-child) {
     margin-right: 6px;
 }
 aside.control .action a.active {
-    background-color: $pink6;
-    border-color: $pink6;
+    background-color: $plum6;
+    border-color: $plum9;
 }
 aside.control .action a:hover {
     @media (pointer: fine) {
@@ -77,8 +77,8 @@ aside.control .action a:hover {
 }
 aside.control .action a.active:hover {
     @media (pointer: fine) {
-        box-shadow: 0 0 4px rgba($pink6, 0.5);
-        border-color: $pink9;
+        box-shadow: 0 0 4px rgba($plum6, 0.5);
+        border-color: $plum9;
     }
 }
 aside.control .action a::before {

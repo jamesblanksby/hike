@@ -40,7 +40,7 @@
     content: attr(data-select-text);
 }
 .field.dropdown .select.active::before {
-    color: $plum6;
+    color: $plum9;
     background-color: $plum0;
     border-color: $plum3;
     border-radius: 4px 4px 0 0;
@@ -63,7 +63,7 @@
     pointer-events: none;
 }
 .field.dropdown .select.active::after {
-    background-color: $plum6;
+    background-color: $plum9;
 }
 .field.dropdown .option {
     position: absolute;
@@ -98,13 +98,13 @@
 }
 .field.dropdown .option a:hover {
     @media (pointer: fine) {
-        color: $plum6;
+        color: $plum9;
         background-color: $snow6;
     }
 }
 .field.dropdown .option a.active {
     color: white;
-    background-color: $plum6;
+    background-color: $plum9;
 }
 .field.dropdown .option a.active::after {
     position: absolute;
