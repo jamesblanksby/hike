@@ -9,6 +9,8 @@ foreach ($file_array as $file) $track_array []= json_decode(file_get_contents(RO
 $track_id = array_pop(explode('/', $_SERVER['REQUEST_URI']));
 $track_active = array_values(array_filter($track_array, function($track) use ($track_id) { if ($track_id === $track->id) return $track; }))[0];
 
+$year_array = range(2019, date('Y'));
+
 $tmp_array = $track_array;
 usort($tmp_array, function($a, $b) { return ($b->distance->total - $a->distance->total); });
 $award_distance = array_slice($tmp_array, 0, 3);
@@ -58,6 +60,16 @@ $award_time = array_slice($tmp_array, 0, 3);
 
     <!-- control -->
     <aside class="control">
+        <div class="filter">
+            <div class="field dropdown">
+                <select id="type" name="type" data-func="filter_year">
+                    <option value="*" selected>All Years</option>
+                    <?php foreach ($year_array as $year) : ?>
+                        <option value="<?= $year; ?>"><?= $year; ?></option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
+        </div>
         <div class="action">
             <a class="center" data-func="track_center"></a>
             <a class="style" data-func="track_style"></a>

@@ -10,6 +10,9 @@ function init() {
 	// browser
 	browser_init();
 
+	// dropdown
+	dropdown_init();
+
 	// map
 	map_init();
 
@@ -64,6 +67,203 @@ function browser_resize() {
 		// add resize class
 		$('html').addClass('browser_resize');
 	});
+}
+
+
+/* ////////////////////////////////////////////////////////////////////////////// */
+/* ///////////////////////////////////////////////////////////////// DROPDOWN /// */
+/* ////////////////////////////////////////////////////////////////////////////// */
+
+/* --------------------------------------------------------------------- INIT --- */
+function dropdown_init() {
+	// prepare
+	dropdown_prepare();
+
+	// toggle
+	dropdown_toggle();
+
+	// select
+	dropdown_select();
+
+	// change
+	dropdown_change();
+}
+
+/* ------------------------------------------------------------------ PREPARE --- */
+function dropdown_prepare() {
+	// loop through dropdown
+	$('.field.dropdown').each(function() {
+		var $dropdown;
+
+		// cache element
+		$dropdown = $(this);
+
+		// build
+		dropdown_build($dropdown);
+	});
+}
+
+/* -------------------------------------------------------------------- BUILD --- */
+function dropdown_build(dropdown) {
+	var $dropdown,
+		$select,
+		$tmp;
+	var width,
+		html = [];
+
+	// cache elements
+	$dropdown = $(dropdown);
+	$select = $dropdown.find('select');
+
+	// build select element
+	$tmp = $('<div class="select"></div>');
+
+	// set placeholder attribute
+	if (typeof $select.attr('placeholder') !== 'undefined') $tmp.attr('data-select-placeholder', $select.attr('placeholder'));
+
+	// build select option
+	$tmp.append('<div class="option"></div>');
+
+	// loop through select option
+	$select.find('option').each(function() {
+		var $option;
+
+		// cache element
+		$option = $(this);
+
+		// build option
+		html.push(dropdown_build_option($option));
+	});
+
+	// append inner html
+	$tmp.find('.option').append(html.join(''));
+
+	// append select to dropdown
+	$dropdown.append($tmp);
+
+	// thread
+	setTimeout(function() {
+		// store max option width
+		width = $tmp.find('.option').outerWidth();
+		// set select width
+		$tmp.width(width);
+	}, 1);
+}
+
+/* ------------------------------------------------------------- BUILD OPTION --- */
+function dropdown_build_option(option) {
+	var $option,
+		$tmp;
+
+	// cache element
+	$option = $(option);
+
+	// build option element
+	$tmp = $('<a></a>');
+
+	// set option text
+	$tmp.html($option.text());
+
+	// set option value
+	$tmp.attr('data-value', $option.val());
+
+	// set disabled class
+	if ($option.is(':disabled')) $tmp.addClass('disabled');
+
+	// set active class
+	if ($option.is(':selected')) $tmp.addClass('active');
+
+	return $tmp.prop('outerHTML');
+}
+
+/* ------------------------------------------------------------------- TOGGLE --- */
+function dropdown_toggle() {
+	// listen for click event
+	$('.dropdown .select').on('click', function(event) {
+		var $select;
+
+		// cache elements
+		$select = $(this);
+
+		// remove active class
+		$('.dropdown .select').not($select).removeClass('active');
+
+		// toggle active class
+		$select.toggleClass('active');
+	});
+
+	// listen for click event
+	$(document).on('click', function(event) {
+		var $target;
+
+		// cache elements
+		$target = $(event.target);
+
+		// prevent close when interacting with dropdown
+		if ($target.is('.select') || $target.closest('.select').length > 0) return;
+
+		// remove active class
+		$('.dropdown .select').removeClass('active');
+	});
+}
+
+/* ------------------------------------------------------------------- SELECT --- */
+function dropdown_select() {
+	// listen for click event
+	$('.dropdown .option a').on('click', function() {
+		var $dropdown,
+			$option,
+			$a;
+		var value;
+
+		// cache elements
+		$a = $(this);
+		$option = $a.closest('.option');
+		$dropdown = $option.closest('.dropdown');
+
+		// store selected value
+		value = $a.attr('data-value');
+
+		// remove active class
+		$option.find('a').not($a).removeClass('active');
+
+		// toggle active class
+		$a.toggleClass('active');
+
+		// backfill select value
+		$dropdown.find('select').val(value).trigger('change');
+	});
+}
+
+/* ------------------------------------------------------------------- CHANGE --- */
+function dropdown_change() {
+	// listen for change event
+	$('.dropdown select').on('change', function() {
+		var $dropdown,
+			$select,
+			$option,
+			$tmp;
+		var value;
+
+		// cache elements
+		$tmp = $(this);
+		$dropdown = $(this).closest('.dropdown');
+		$select = $dropdown.find('.select');
+		$option = $select.find('.option');
+
+		// bail when no option selected
+		if ($tmp.prop('selectedIndex') === 0 
+			&& typeof $tmp.find('option').first().attr('selected') === 'undefined') return;
+
+		// store select value
+		value = $tmp.val();
+
+		// add active class
+		$option.find('a[data-value="' + value + '"]').addClass('active');
+
+		// set select text
+		$select.attr('data-select-text', $tmp.find('option:selected').text());
+	}).trigger('change');
 }
 
 
@@ -546,7 +746,8 @@ function track_source() {
 		var coordinate,
 			feature,
 			track,
-			color;
+			color,
+			year;
 
 		// store current track
 		track = TRACK.item[i];
@@ -557,10 +758,14 @@ function track_source() {
 		// determine track color depending on distance
 		color = track_color(track);
 
+		// determine track year
+		year = new Date((track.time.start * 1000));
+		year = year.getFullYear();
+
 		// build source feature
 		feature = {
 			type: 'Feature',
-			properties: { id: track.id, color: color, track: JSON.stringify(track), },
+			properties: { id: track.id, year: year, color: color, track: JSON.stringify(track), },
 			geometry: { type: 'LineString', coordinates: coordinate, },
 		};
 		// add feature to source
@@ -629,15 +834,37 @@ function track_center() {
 
 /* -------------------------------------------------------------------- STYLE --- */
 function track_style() {
-	// toggle style
-	if (TRACK.style === 'default') TRACK.style = 'heatmap';
-	else if (TRACK.style === 'heatmap') TRACK.style = 'default';
+	(async function() {
+		// toggle style
+		if (TRACK.style === 'default') TRACK.style = 'heatmap';
+		else if (TRACK.style === 'heatmap') TRACK.style = 'default';
 
-	// draw
-	track_draw();
+		// draw
+		await track_draw();
 
-	// center
-	track_center();
+		// center
+		track_center();
+
+		// filter
+		track_filter_year();
+	})();
+}
+
+/* ------------------------------------------------------------ FILTER : YEAR --- */
+function track_filter_year() {
+	var layer;
+
+	// determine active layer
+	if (TRACK.style === 'default') layer = ['track-default',];
+	else if (TRACK.style === 'heatmap') layer = ['track-heatmap-base', 'track-heatmap-density',];
+
+	// loop through layers
+	for (var i = 0; i < layer.length; i++) {
+		// filter set
+		if (!isNaN(FILTER.year)) MAP.ctx.setFilter(layer[i], ['==', 'year', FILTER.year,]);
+		// filter clear
+		else MAP.ctx.setFilter(layer[i], undefined);
+	}
 }
 
 /* ---------------------------------------------------------- FEATURE : HOVER --- */
@@ -950,5 +1177,14 @@ function control_listen() {
 		
 		// style
 		track_style();
+	});
+
+	// listen for change
+	$control.find('[data-func=filter_year]').on('change', function() {
+		// store filter value
+		FILTER.year = parseInt($(this).val());
+
+		// year filter
+		track_filter_year();
 	});
 }

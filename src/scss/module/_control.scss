@@ -29,6 +29,24 @@ aside.control {
     }
 }
 
+/* ------------------------------------------------------------------- FILTER --- */
+aside.control .filter {
+    position: relative;
+    padding-right: 8px;
+    margin-right: 8px;
+}
+aside.control .filter::after {
+    position: absolute;
+    top: 50%;
+    right: 0;
+    display: block;
+    width: 1px;
+    height: 16px;
+    content: '';
+    background-color: $grey0;
+    transform: translate(50%, -50%);
+}
+
 /* ------------------------------------------------------------------- ACTION --- */
 aside.control .action {
     display: flex;
@@ -48,8 +66,8 @@ aside.control .action a:not(:last-child) {
     margin-right: 6px;
 }
 aside.control .action a.active {
-    background-color: $plum6;
-    border-color: $plum6;
+    background-color: $pink6;
+    border-color: $pink6;
 }
 aside.control .action a:hover {
     @media (pointer: fine) {
@@ -59,8 +77,8 @@ aside.control .action a:hover {
 }
 aside.control .action a.active:hover {
     @media (pointer: fine) {
-        box-shadow: 0 0 4px rgba($plum6, 0.5);
-        border-color: $plum9;
+        box-shadow: 0 0 4px rgba($pink6, 0.5);
+        border-color: $pink9;
     }
 }
 aside.control .action a::before {

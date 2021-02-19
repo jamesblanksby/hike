@@ -6,6 +6,10 @@
 var MAPBOX = {};
 	MAPBOX.token = 'pk.eyJ1IjoiamFtZXNibGFua3NieSIsImEiOiJjazBiM2E1dzkwbzVxM2dud3lvZXNocW9uIn0.hTartIj-fT9-6f7yOAuLIg';
 
+/* ------------------------------------------------------------------- FILTER --- */
+var FILTER = {};
+	FILTER.year = NaN;
+
 /* ---------------------------------------------------------------------- MAP --- */
 var MAP = {};
 	MAP.ctx = undefined;

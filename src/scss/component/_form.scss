@@ -1,0 +1,124 @@
+/* ////////////////////////////////////////////////////////////////////////////// */
+/* ///////////////////////////////////////////////////////////////////// FORM /// */
+/* ////////////////////////////////////////////////////////////////////////////// */
+
+/* --------------------------------------------------------- FIELD : DROPDOWN --- */
+.field.dropdown select {
+    display: none;
+}
+.field.dropdown .select {
+    position: relative;
+    height: 32px;
+}
+.field.dropdown .select::before {
+    display: flex;
+    height: 100%;
+    padding: 0 22px 0 12px;
+    align-items: center;
+    font-family: $family;
+    font-size: 14px;
+    white-space: nowrap;
+    background-color: white;
+    border: 1px solid $snow6;
+    border-radius: 4px;
+    transition: border-color 160ms, box-shadow 160ms;
+    will-change: border-color, box-shadow;
+    cursor: pointer;
+}
+.field.dropdown .select:hover::before {
+    @media (pointer: fine) {
+        box-shadow: 0 0 4px rgba($grey9, 0.125);
+        border-color: $grey0;
+    }
+}
+.field.dropdown .select[data-select-placeholder]::before {
+    color: $grey6;
+    content: attr(data-select-placeholder);
+}
+.field.dropdown .select[data-select-text]::before {
+    color: $grey9;
+    content: attr(data-select-text);
+}
+.field.dropdown .select.active::before {
+    color: $plum6;
+    background-color: $plum0;
+    border-color: $plum3;
+    border-radius: 4px 4px 0 0;
+}
+.field.dropdown .select::after {
+    position: absolute;
+    top: 50%;
+    right: 0;
+    display: block;
+    width: 8px;
+    height: 8px;
+    margin-right: 8px;
+    content: '';
+    background-color: $grey9;
+    mask-image: url('../gfx/field/dropdown/arrow.svg');
+    mask-position: center;
+    mask-size: contain;
+    mask-repeat: no-repeat;
+    transform: translateY(-50%);
+    pointer-events: none;
+}
+.field.dropdown .select.active::after {
+    background-color: $plum6;
+}
+.field.dropdown .option {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    padding: 3px;
+    background-color: white;
+    box-shadow: 1px 1px 12px rgba($grey9, 0.125);
+    border-radius: 0 0 4px 4px;
+    opacity: 0;
+    pointer-events: none;
+}
+.field.dropdown .select.active .option {
+    opacity: 1;
+    pointer-events: all;
+}
+.field.dropdown .option a {
+    position: relative;
+    display: block;
+    padding: 8px 12px;
+    overflow: hidden;
+    color: $grey9;
+    font-family: $family;
+    font-size: 12px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    border-radius: 2px;
+}
+.field.dropdown .option a:not(:last-child) {
+    margin-bottom: 2px;
+}
+.field.dropdown .option a:hover {
+    @media (pointer: fine) {
+        color: $plum6;
+        background-color: $snow6;
+    }
+}
+.field.dropdown .option a.active {
+    color: white;
+    background-color: $plum6;
+}
+.field.dropdown .option a.active::after {
+    position: absolute;
+    top: 50%;
+    right: 0;
+    display: block;
+    width: 10px;
+    height: 10px;
+    margin-right: 8px;
+    content: '';
+    background-color: white;
+    mask-image: url('../gfx/field/dropdown/tick.svg');
+    mask-position: center;
+    mask-size: contain;
+    mask-repeat: no-repeat;
+    transform: translateY(-50%);
+}
