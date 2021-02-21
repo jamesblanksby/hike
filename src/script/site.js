@@ -744,10 +744,10 @@ function track_source() {
 	// loop through data tracks
 	for (var i = 0; i < TRACK.item.length; i++) {
 		var coordinate,
-			feature,
 			track,
 			color,
-			year;
+			year,
+			tmp;
 
 		// store current track
 		track = TRACK.item[i];
@@ -763,13 +763,13 @@ function track_source() {
 		year = year.getFullYear();
 
 		// build source feature
-		feature = {
+		tmp = {
 			type: 'Feature',
 			properties: { id: track.id, year: year, color: color, track: JSON.stringify(track), },
 			geometry: { type: 'LineString', coordinates: coordinate, },
 		};
 		// add feature to source
-		source.data.features.push(feature);
+		source.data.features.push(tmp);
 	}
 
 	// append source to map
@@ -934,6 +934,7 @@ function track_feature_active(track, feature) {
 				18, 8,
 			],
 			'line-color': 'rgba(221, 28, 119, 1)',
+			'line-pattern': 'track-direction',
 		},
 		filter: ['==', ['get', 'id',], track.id,],
 	};
@@ -953,6 +954,112 @@ function track_feature_remove(feature, state) {
 	TRACK.state[state] = undefined;
 }
 
+/* ---------------------------------------------------------- MARKER : INSERT --- */
+function track_marker_insert(track) {
+	var linestring,
+		distance,
+		source,
+		layer,
+		step;
+
+	// purge track marker layer and source
+	track_marker_purge();
+
+	// convert track to linestring
+	linestring = turf.helpers.lineString(track.point.map(function(point) { return point.coordinate; }));
+
+	// build track data source
+	source = { type: 'geojson', data: { type: 'FeatureCollection', features: [], }, generateId: true, };
+
+	// determine track distance
+	distance = Math.floor((track.distance.total / 1000));
+
+	// define marker step
+	step = 1;
+	if (distance > 25) step = 3;
+
+	// loop through kilometres
+	for (var i = 0; i <= distance; i++) {
+		// skip initial point
+		if (i === 0) continue;
+		// skip when not step
+		if (i % step !== 0 && i !== distance) continue;
+
+		var segment,
+			tmp;
+
+		// determine point at distance
+		segment = turf.along(linestring, i);
+
+		// build source feature
+		tmp = {
+			type: 'Feature',
+			properties: { distance: i, },
+			geometry: { type: 'Point', coordinates: segment.geometry.coordinates, },
+		};
+		// add feature to source
+		source.data.features.push(tmp);
+	}
+
+	// append source to map
+	MAP.ctx.addSource('track-marker', source);
+
+	// build circle layer	
+	layer = {
+		id: 'track-marker-circle',
+		type: 'circle',
+		source: 'track-marker',
+		paint: {
+			'circle-radius': 5,
+			'circle-color': 'white',
+			'circle-stroke-width': 2,
+			'circle-stroke-color': 'rgba(221, 28, 119, 1)',
+		},
+	};
+	// append layer to map
+	MAP.ctx.addLayer(layer, 'waterway-label');
+
+	// build distance layer
+	layer = {
+		id: 'track-marker-distance',
+		type: 'symbol',
+		source: 'track-marker',
+		paint: {
+			'text-color': 'black',
+		},
+		layout: {
+			'text-font': ['DIN Pro Medium',],
+			'text-size': 6,
+			'text-field': '{distance}',
+			'text-allow-overlap': true,
+			'text-ignore-placement': true,
+		},
+	};
+	// append layer to map
+	MAP.ctx.addLayer(layer, 'waterway-label');
+}
+
+/* ----------------------------------------------------------- MARKER : PURGE --- */
+function track_marker_purge() {
+	// determine whether layer can be removed
+	if (MAP.ctx.getLayer('track-marker-circle')) {
+		// remove layer
+		MAP.ctx.removeLayer('track-marker-circle');
+	}
+
+	// determine whether layer can be removed
+	if (MAP.ctx.getLayer('track-marker-distance')) {
+		// remove layer
+		MAP.ctx.removeLayer('track-marker-distance');
+	}
+
+	// determine whether source can be removed
+	if (MAP.ctx.getSource('track-marker')) {
+		// remove source
+		MAP.ctx.removeSource('track-marker');
+	}
+}
+
 /* ---------------------------------------------------------- DETAIL : ACTIVE --- */
 function track_detail_active(track, feature) {
 	var $detail;
@@ -969,6 +1076,9 @@ function track_detail_active(track, feature) {
 	// add track active state
 	TRACK.state.active = feature;
 	track_feature_active(track, feature);
+
+	// add track distance
+	track_marker_insert(track);
 
 	// update paint property
 	MAP.ctx.setPaintProperty('track-default', 'line-opacity', 0.5);
@@ -1016,6 +1126,9 @@ function track_detail_reset() {
 		// remove feature state
 		track_feature_remove(TRACK.state.active, 'active');
 	}
+
+	// purge track marker layer and source
+	track_marker_purge();
 
 	// reset paint property
 	MAP.ctx.setPaintProperty('track-default', 'line-opacity', 1);

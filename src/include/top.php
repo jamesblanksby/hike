@@ -26,6 +26,8 @@ $class []= 'browser_load';
     <script defer src="<?= ROOT_URL . path('src', 'plugin', 'jquery', 'jquery.js'); ?>"></script>
     <!-- plugin : mapbox -->
 	<script defer src="<?= ROOT_URL . path('src', 'plugin', 'mapbox', 'mapbox.js'); ?>"></script>
+    <!-- plugin : turf -->
+	<script defer src="<?= ROOT_URL . path('src', 'plugin', 'turf', 'turf.js'); ?>"></script>
     <!-- script : var -->
     <script defer src="<?= ROOT_URL . path('src', 'script', 'var.js'); ?>"></script>
     <!-- script : site -->
