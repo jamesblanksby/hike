@@ -934,7 +934,6 @@ function track_feature_active(track, feature) {
 				18, 8,
 			],
 			'line-color': 'rgba(221, 28, 119, 1)',
-			'line-pattern': 'track-direction',
 		},
 		filter: ['==', ['get', 'id',], track.id,],
 	};
