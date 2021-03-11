@@ -1296,6 +1296,9 @@ function control_listen() {
 		// store filter value
 		FILTER.year = parseInt($(this).val());
 
+		// toggle display class
+		$('aside.data').removeClass('display').filter('[data-year=' + (!isNaN(FILTER.year) ? FILTER.year : '*') + ']').addClass('display');
+
 		// year filter
 		track_filter_year();
 	});

@@ -79,8 +79,9 @@ $award_time = array_slice($tmp_array, 0, 3);
     </aside>
 
     <!-- data -->
-    <aside class="data">
+    <aside class="data display" data-year="*">
         <div class="scroll">
+            <?php $tmp_array = $track_array; ?>
             <?php include ROOT_DIR . path('src', 'template', 'group', 'time.php'); ?>
             <?php include ROOT_DIR . path('src', 'template', 'group', 'distance.php'); ?>
             <?php include ROOT_DIR . path('src', 'template', 'group', 'speed.php'); ?>
@@ -88,6 +89,22 @@ $award_time = array_slice($tmp_array, 0, 3);
             <?php include ROOT_DIR . path('src', 'template', 'group', 'elevation.php'); ?>
         </div>
     </aside>
+
+    <?php if (!empty($year_array)) : ?>
+        <?php foreach ($year_array as $year) : ?>
+            <?php $tmp_array = array_values(array_filter($track_array, function($track) use ($year) { return $year == date('Y', $track->time->start); })); ?>
+            <!-- data -->
+            <aside class="data" data-year="<?= $year; ?>">
+                <div class="scroll">
+                    <?php include ROOT_DIR . path('src', 'template', 'group', 'time.php'); ?>
+                    <?php include ROOT_DIR . path('src', 'template', 'group', 'distance.php'); ?>
+                    <?php include ROOT_DIR . path('src', 'template', 'group', 'speed.php'); ?>
+                    <?php include ROOT_DIR . path('src', 'template', 'group', 'pace.php'); ?>
+                    <?php include ROOT_DIR . path('src', 'template', 'group', 'elevation.php'); ?>
+                </div>
+            </aside>
+        <?php endforeach; ?>
+    <?php endif; ?>
 
 </main>
 

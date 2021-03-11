@@ -31,6 +31,9 @@ aside.data {
         height: 50%;
     }
 }
+aside.data:not(.display) {
+    display: none;
+}
 aside.data::before,
 aside.data::after {
     position: absolute;
