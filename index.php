@@ -9,7 +9,7 @@ foreach ($file_array as $file) $track_array []= json_decode(file_get_contents(RO
 $track_id = array_pop(explode('/', $_SERVER['REQUEST_URI']));
 $track_active = array_values(array_filter($track_array, function($track) use ($track_id) { return $track_id === $track->id; }))[0];
 
-$year_array = range(date('Y', min(array_map(function($track) { return $track->time->start; }, $track_array))), date('Y'));
+$year_array = range(date('Y'), date('Y', min(array_map(function($track) { return $track->time->start; }, $track_array))));
 
 $tmp_array = $track_array;
 usort($tmp_array, function($a, $b) { return ($b->distance->total - $a->distance->total); });
