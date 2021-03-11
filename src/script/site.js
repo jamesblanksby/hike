@@ -822,8 +822,20 @@ function track_center() {
 	var coordinate,
 		bound;
 
-	// merge track coordinates
-	coordinate = TRACK.item.flatMap(function(track) { return track_coordinate(track); })
+	// filter set
+	if (!isNaN(FILTER.year)) {
+		// merge filtered track coordinates
+		coordinate = TRACK.item.flatMap(function(track) {
+			if ((new Date((track.time.start * 1000))).getFullYear() === FILTER.year) return track_coordinate(track);
+		}).filter(Boolean);
+		
+	}
+	// filter clear
+	else {
+		// merge track coordinates
+		coordinate = TRACK.item.flatMap(function(track) { return track_coordinate(track); });
+	}
+	
 	// reduce coordinates to bound
 	bound = map_coordinate_bound(coordinate);
 
@@ -851,9 +863,7 @@ function track_style() {
 
 /* ------------------------------------------------------------ FILTER : YEAR --- */
 function track_filter_year() {
-	var coordinate,
-		bound,
-		layer;
+	var layer;
 
 	// determine active layer
 	if (TRACK.style === 'default') layer = ['track-default',];
@@ -867,20 +877,8 @@ function track_filter_year() {
 		else MAP.ctx.setFilter(layer[i], undefined);
 	}
 
-	// filter set
-	if (!isNaN(FILTER.year)) {
-		// merge filtered track coordinates
-		coordinate = TRACK.item.flatMap(function(track) {
-			if ((new Date((track.time.start * 1000))).getFullYear() === FILTER.year) return track_coordinate(track);
-		}).filter(Boolean);
-		// reduce coordinates to bound
-		bound = map_coordinate_bound(coordinate);
-
-		// bound
-		map_bound(bound);
-	}
-	// filter clear
-	else track_center();
+	// center
+	track_center();
 }
 
 /* ---------------------------------------------------------- FEATURE : HOVER --- */
