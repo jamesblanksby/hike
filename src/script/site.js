@@ -384,6 +384,8 @@ function map_layer_purge(id) {
 
 /* ------------------------------------------------------- COORDINATE : BOUND --- */
 function map_coordinate_bound(coordinate) {
+	var bound;
+	
 	// reduce coordinates to bounds
 	bound = coordinate.reduce(function(bound, coordinate) {
 		return bound.extend(coordinate);
