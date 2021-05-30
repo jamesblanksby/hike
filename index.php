@@ -20,8 +20,10 @@ usort($tmp_array, function($a, $b) { return ($b->elevation->gain - $a->elevation
 $award_elevation = array_slice($tmp_array, 0, 3);
 
 $tmp_array = $track_array;
-usort($tmp_array, function($a, $b) { return ($b->time->moving - $a->time->moving); });
-$award_time = array_slice($tmp_array, 0, 3);
+usort($tmp_array, function($a, $b) { 
+	return ($a->time->moving / ($a->distance->total / 1000)) - ($b->time->moving / ($b->distance->total / 1000));
+});
+$award_pace = array_slice($tmp_array, 0, 3);
 ?>
 
 <!-- top -->
